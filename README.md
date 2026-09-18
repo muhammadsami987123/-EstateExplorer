@@ -23,6 +23,14 @@ An AI-assisted real-estate discovery experience that combines guided preferences
 
 </div>
 
+## Product preview
+
+<p align="center">
+	<img src="estateexplorer.PNG" alt="EstateExplorer homepage showing AI-powered property discovery and a featured luxury villa" width="100%">
+</p>
+
+<p align="center"><em>EstateExplorer homepage: conversational discovery, transparent match scoring, and premium property presentation.</em></p>
+
 > **Status:** Demonstration-ready product prototype. The included property and market records are labeled demo data and are not live listings.
 
 ## Why this project
