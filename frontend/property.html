@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Property Details — AI Real Estate Explorer</title>
+  <meta name="description" content="View in-depth property specifications, AI valuation assessments, features, floor plans, and area market trends.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/main.css">
+  <link href="https://unpkg.com/maplibre-gl@3.6.2/dist/maplibre-gl.css" rel="stylesheet" />
+  <script src="https://unpkg.com/maplibre-gl@3.6.2/dist/maplibre-gl.js"></script>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏡</text></svg>">
+  <style>
+    .property-detail-layout {
+      display: grid;
+      grid-template-columns: 1fr 380px;
+      gap: 3rem;
+      align-items: start;
+    }
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 1rem;
+      margin-bottom: 2.5rem;
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+    }
+    .gallery-main {
+      width: 100%;
+      height: 480px;
+      object-fit: cover;
+      cursor: pointer;
+    }
+    .gallery-thumbs {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    .gallery-thumb {
+      width: 100%;
+      height: 232px;
+      object-fit: cover;
+      cursor: pointer;
+      transition: opacity var(--transition);
+    }
+    .gallery-thumb:hover {
+      opacity: 0.85;
+    }
+    .spec-badge-box {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      padding: 1.25rem;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      margin: 1.5rem 0;
+      flex-wrap: wrap;
+    }
+    .spec-item {
+      display: flex;
+      flex-direction: column;
+    }
+    .spec-item .label {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      letter-spacing: 0.05em;
+    }
+    .spec-item .val {
+      font-size: 1.15rem;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+    .features-list {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.85rem;
+      margin-top: 1rem;
+    }
+    .feature-point {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      font-size: 0.95rem;
+      color: var(--text-secondary);
+    }
+    .property-sidebar {
+      position: sticky;
+      top: 92px;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+    #property-minimap {
+      width: 100%;
+      height: 260px;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+      margin-top: 1rem;
+    }
+    @media (max-width: 960px) {
+      .property-detail-layout {
+        grid-template-columns: 1fr;
+      }
+      .gallery-grid {
+        grid-template-columns: 1fr;
+      }
+      .gallery-thumbs {
+        flex-direction: row;
+      }
+      .gallery-thumb {
+        height: 140px;
+      }
+      .property-sidebar {
+        position: static;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Sticky Navigation -->
+  <header class="nav">
+    <div class="container nav-inner">
+      <a href="index.html" class="nav-logo">
+        <div class="nav-logo-icon">AI</div>
+        <span>Estate<span class="accent">Explorer</span></span>
+      </a>
+
+      <nav>
+        <ul class="nav-links">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="explore.html">Explore</a></li>
+          <li><a href="properties.html" class="active">Properties</a></li>
+          <li><a href="advisor.html">AI Advisor</a></li>
+          <li><a href="market.html">Market Insights</a></li>
+          <li><a href="reports.html">Reports</a></li>
+          <li><a href="saved.html">Saved</a></li>
+        </ul>
+      </nav>
+
+      <div class="nav-actions">
+        <button type="button" class="theme-toggle" aria-label="Toggle Theme">🌙</button>
+        <a href="advisor.html" class="btn btn-gold btn-sm">Start Exploring</a>
+        <button type="button" class="nav-mobile-toggle" aria-label="Toggle Navigation Menu">☰</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="section-sm">
+    <div class="container">
+      
+      <!-- Breadcrumb -->
+      <nav style="font-size:0.875rem; color:var(--text-muted); margin-bottom:1.5rem;">
+        <a href="index.html">Home</a> &nbsp;/&nbsp; 
+        <a href="properties.html">Properties</a> &nbsp;/&nbsp; 
+        <span id="breadcrumb-city">City</span> &nbsp;/&nbsp; 
+        <span id="breadcrumb-title" style="color:var(--text-primary); font-weight:500;">Listing</span>
+      </nav>
+
+      <!-- Main Property Detail View -->
+      <div id="property-container">
+        
+        <!-- Header Row -->
+        <div class="flex-between items-start flex-wrap gap-md mb-md">
+          <div>
+            <div class="flex items-center gap-sm mb-xs">
+              <span id="prop-type-badge" class="badge badge-sale">For Sale</span>
+              <span id="prop-category-badge" class="tag">Villa</span>
+            </div>
+            <h1 id="prop-title" style="font-size:clamp(1.8rem, 3.5vw, 2.8rem);">Ultra-Modern Luxury Villa</h1>
+            <div id="prop-location" style="color:var(--text-muted); margin-top:0.4rem; display:flex; align-items:center; gap:0.4rem;">
+              📍 DHA Phase 8, Karachi, Pakistan
+            </div>
+          </div>
+
+          <div class="text-right">
+            <div id="prop-price" style="font-family:var(--font-serif); font-size:2.4rem; font-weight:700; color:var(--accent);">
+              PKR 185,000,000
+            </div>
+            <span id="prop-period" style="font-size:0.85rem; color:var(--text-muted);">Total Acquisition Price</span>
+          </div>
+        </div>
+
+        <!-- Gallery Grid -->
+        <div class="gallery-grid" id="prop-gallery">
+          <img id="gallery-main-img" src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=1200&q=80" alt="Main View" class="gallery-main">
+          <div class="gallery-thumbs">
+            <img id="gallery-thumb-1" src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=800&q=80" alt="Interior View" class="gallery-thumb">
+            <img id="gallery-thumb-2" src="https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?auto=format&fit=crop&w=800&q=80" alt="Pool View" class="gallery-thumb">
+          </div>
+        </div>
+
+        <!-- Detail Layout (Two Columns) -->
+        <div class="property-detail-layout">
+          
+          <!-- Left Column (Specs, Overview, Amenities, Map) -->
+          <div>
+            <!-- Specs Row -->
+            <div class="spec-badge-box">
+              <div class="spec-item">
+                <span class="label">Bedrooms</span>
+                <span class="val" id="spec-beds">6 Beds</span>
+              </div>
+              <div class="spec-item">
+                <span class="label">Bathrooms</span>
+                <span class="val" id="spec-baths">7 Baths</span>
+              </div>
+              <div class="spec-item">
+                <span class="label">Covered Area</span>
+                <span class="val" id="spec-area">9,000 sq ft</span>
+              </div>
+              <div class="spec-item">
+                <span class="label">Parking</span>
+                <span class="val" id="spec-parking">4 Cars</span>
+              </div>
+              <div class="spec-item">
+                <span class="label">Furnishing</span>
+                <span class="val" id="spec-furnished">Furnished</span>
+              </div>
+            </div>
+
+            <!-- Overview Section -->
+            <div class="card mb-md">
+              <h3 class="mb-sm">Property Overview</h3>
+              <p id="prop-description" style="line-height:1.75;">
+                Architectural masterpiece located in prime residential enclave. Designed by leading architects with imported finishes, smart automation, private swimming pool, and uninterrupted power backup.
+              </p>
+            </div>
+
+            <!-- Features & Amenities -->
+            <div class="card mb-md">
+              <h3 class="mb-sm">Key Features & Amenities</h3>
+              <div class="features-list" id="prop-features">
+                <div class="feature-point"><span>✓</span> Swimming Pool</div>
+                <div class="feature-point"><span>✓</span> Smart Home System</div>
+                <div class="feature-point"><span>✓</span> Private Landscaped Garden</div>
+                <div class="feature-point"><span>✓</span> Passenger Elevator</div>
+                <div class="feature-point"><span>✓</span> Solar Power Grid</div>
+                <div class="feature-point"><span>✓</span> Gated Perimeter Security</div>
+              </div>
+            </div>
+
+            <!-- Neighborhood & Map -->
+            <div class="card mb-md">
+              <div class="flex-between items-center">
+                <h3>Location & Surroundings</h3>
+                <span class="tag">Walk Score: 88</span>
+              </div>
+              <p id="prop-address" style="margin-top:0.5rem; font-size:0.9rem; color:var(--text-muted);">
+                Street 14, Zone B, DHA Phase 8, Karachi
+              </p>
+              <div id="property-minimap"></div>
+            </div>
+          </div>
+
+          <!-- Right Sidebar (Actions, Match Score, AI Analysis, Agent) -->
+          <aside class="property-sidebar">
+            
+            <!-- Actions Card -->
+            <div class="card">
+              <h4 class="mb-sm">Property Actions</h4>
+              <div style="display:flex; flex-direction:column; gap:0.75rem;">
+                <button type="button" id="save-prop-btn" class="btn btn-secondary" style="width:100%;">
+                  <span id="save-heart-icon">♡</span> <span>Save to Wishlist</span>
+                </button>
+                <button type="button" id="compare-prop-btn" class="btn btn-secondary" style="width:100%;">
+                  <span>⚖️ Add to Compare</span>
+                </button>
+                <button type="button" id="share-prop-btn" class="btn btn-ghost" style="width:100%;">
+                  <span>🔗 Share Property</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- AI Match Assessment Card -->
+            <div class="card card-gold">
+              <div class="flex-between items-center mb-xs">
+                <span class="section-eyebrow" style="margin-bottom:0;">AI Match Score</span>
+                <span class="badge badge-match" id="match-score-badge">96% High Fit</span>
+              </div>
+              <p style="font-size:0.875rem; margin-top:0.5rem; margin-bottom:1rem;">
+                Based on your preferred bedroom count, location priority, and capital appreciation profile.
+              </p>
+              <div style="display:flex; flex-direction:column; gap:0.5rem; font-size:0.8rem; border-top:1px solid var(--border); padding-top:0.75rem;">
+                <div class="flex-between">
+                  <span>Location Fit</span>
+                  <strong style="color:var(--success);">98%</strong>
+                </div>
+                <div class="flex-between">
+                  <span>Budget Alignment</span>
+                  <strong style="color:var(--success);">95%</strong>
+                </div>
+                <div class="flex-between">
+                  <span>Feature Match</span>
+                  <strong style="color:var(--success);">94%</strong>
+                </div>
+              </div>
+            </div>
+
+            <!-- AI Executive Insight Card -->
+            <div class="card">
+              <h4 class="mb-xs">🤖 AI Property Assessment</h4>
+              <p id="ai-assessment-text" style="font-size:0.875rem; line-height:1.6; color:var(--text-secondary);">
+                "Prime tier-1 asset with above-average square footage for this subdivision. Estimated fair valuation is within ±2.5% of asking price. High rental demand from overseas corporate executives."
+              </p>
+            </div>
+
+            <!-- Contact Agent Box -->
+            <div class="card">
+              <h4 class="mb-sm">Consulting Agent</h4>
+              <div class="flex items-center gap-sm mb-sm">
+                <div style="width:48px; height:48px; border-radius:50%; background:var(--accent-light); display:flex; align-items:center; justify-content:center; font-weight:700; color:var(--accent-dark); font-size:1.1rem;">
+                  AR
+                </div>
+                <div>
+                  <div style="font-weight:600;" id="agent-name">Ahmed Raza</div>
+                  <div style="font-size:0.8rem; color:var(--text-muted);" id="agent-email">ahmed.raza@luxurypakistan.com</div>
+                </div>
+              </div>
+              <button type="button" id="inquire-btn" class="btn btn-gold" style="width:100%;">
+                Request Consultation
+              </button>
+            </div>
+
+          </aside>
+
+        </div>
+
+      </div>
+
+      <!-- Similar Properties Strip -->
+      <section class="section-sm" style="margin-top:2rem; border-top:1px solid var(--border);">
+        <div class="flex-between items-center section-header" style="margin-bottom:1.5rem;">
+          <div>
+            <span class="section-eyebrow">Recommendations</span>
+            <h3>Similar Properties</h3>
+          </div>
+          <a href="properties.html" class="btn btn-sm btn-secondary">Explore More ➔</a>
+        </div>
+        <div id="similar-properties-grid" class="grid-3"></div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- Global Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="index.html" class="nav-logo" style="margin-bottom: 1rem;">
+            <div class="nav-logo-icon">AI</div>
+            <span>Estate<span class="accent">Explorer</span></span>
+          </a>
+          <p>Next-generation real estate intelligence platform with autonomous matching heuristics.</p>
+        </div>
+        <div>
+          <h4 class="footer-heading">Platform</h4>
+          <ul class="footer-links">
+            <li><a href="advisor.html">AI Questionnaire</a></li>
+            <li><a href="properties.html">Catalog</a></li>
+            <li><a href="market.html">Market Insights</a></li>
+            <li><a href="reports.html">Reports</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="footer-heading">Hubs</h4>
+          <ul class="footer-links">
+            <li><a href="properties.html?city=Karachi">Karachi</a></li>
+            <li><a href="properties.html?city=Lahore">Lahore</a></li>
+            <li><a href="properties.html?city=Dubai">Dubai</a></li>
+            <li><a href="properties.html?city=London">London</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="footer-heading">Legal</h4>
+          <ul class="footer-links">
+            <li><a href="privacy.html">Privacy</a></li>
+            <li><a href="terms.html">Terms [Demo]</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <div>&copy; 2024 AI Real Estate Explorer. All listings are for demonstration purposes [Demo Dataset].</div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Script Logic -->
+  <script type="module">
+    import api from './js/api.js';
+    import { formatPrice, formatArea, capitalize, showToast, compareList, toggleSave, createPropertyCardHTML, attachCardEventListeners } from './js/app.js';
+    import { mockProperties } from './js/mock_data.js';
+
+    let currentProperty = null;
+
+    function getPropertyId() {
+      const params = new URLSearchParams(window.location.search);
+      return params.get('id') || 'prop-001';
+    }
+
+    async function loadProperty() {
+      const id = getPropertyId();
+      try {
+        const prop = await api.properties.get(id);
+        if (prop && prop.id) {
+          currentProperty = prop;
+        } else {
+          currentProperty = mockProperties.find(p => p.id === id) || mockProperties[0];
+        }
+      } catch (e) {
+        console.warn('API error loading property, falling back to mock record', e);
+        currentProperty = mockProperties.find(p => p.id === id) || mockProperties[0];
+      }
+
+      renderPropertyDetails(currentProperty);
+      loadSimilarProperties(currentProperty);
+      initMiniMap(currentProperty);
+    }
+
+    function renderPropertyDetails(p) {
+      document.title = `${p.title} — AI Real Estate Explorer`;
+      document.getElementById('breadcrumb-city').textContent = p.city || 'Territory';
+      document.getElementById('breadcrumb-title').textContent = p.title || 'Property';
+
+      document.getElementById('prop-title').textContent = p.title;
+      document.getElementById('prop-location').textContent = `📍 ${p.address || ''}, ${p.area || ''}, ${p.city || ''}, ${p.country || ''}`;
+      document.getElementById('prop-price').textContent = formatPrice(p.price, p.currency);
+      document.getElementById('prop-period').textContent = p.listing_type === 'rent' ? 'Per Month' : 'Total Acquisition Price';
+
+      const typeBadge = document.getElementById('prop-type-badge');
+      typeBadge.textContent = p.listing_type === 'rent' ? 'For Rent' : 'For Sale';
+      typeBadge.className = `badge ${p.listing_type === 'rent' ? 'badge-rent' : 'badge-sale'}`;
+      document.getElementById('prop-category-badge').textContent = capitalize(p.property_type || 'Property');
+
+      // Gallery Images
+      const images = (p.images && p.images.length > 0) ? p.images : [
+        'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=1200&q=80',
+        'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=800&q=80',
+        'https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?auto=format&fit=crop&w=800&q=80'
+      ];
+      document.getElementById('gallery-main-img').src = images[0];
+      if (images[1]) document.getElementById('gallery-thumb-1').src = images[1];
+      if (images[2]) document.getElementById('gallery-thumb-2').src = images[2];
+
+      // Specs
+      document.getElementById('spec-beds').textContent = p.bedrooms ? `${p.bedrooms} Beds` : 'N/A';
+      document.getElementById('spec-baths').textContent = p.bathrooms ? `${p.bathrooms} Baths` : 'N/A';
+      document.getElementById('spec-area').textContent = p.area_sqft ? formatArea(p.area_sqft) : 'N/A';
+      document.getElementById('spec-parking').textContent = p.parking_spaces ? `${p.parking_spaces} Cars` : 'Included';
+      document.getElementById('spec-furnished').textContent = capitalize(p.furnished || 'Unspecified');
+
+      document.getElementById('prop-description').textContent = p.description || 'Exclusive luxury listing featuring premium appointments.';
+      document.getElementById('prop-address').textContent = `${p.address || ''} ${p.area || ''}, ${p.city || ''}`;
+
+      // Features
+      if (p.features && p.features.length > 0) {
+        document.getElementById('prop-features').innerHTML = p.features.map(f => `
+          <div class="feature-point"><span>✓</span> ${f}</div>
+        `).join('');
+      }
+
+      // Agent
+      if (p.agent) {
+        document.getElementById('agent-name').textContent = p.agent.name || 'Property Consultant';
+        document.getElementById('agent-email').textContent = p.agent.email || 'advisory@airealestate.com';
+      }
+
+      // Saved button state
+      const saved = JSON.parse(localStorage.getItem('savedIds') || '[]');
+      const isSaved = saved.includes(p.id);
+      updateSaveButton(isSaved);
+
+      // Save listener
+      const saveBtn = document.getElementById('save-prop-btn');
+      saveBtn.onclick = () => {
+        toggleSave(p.id, null);
+        const updatedSaved = JSON.parse(localStorage.getItem('savedIds') || '[]');
+        updateSaveButton(updatedSaved.includes(p.id));
+      };
+
+      // Compare listener
+      document.getElementById('compare-prop-btn').onclick = () => {
+        compareList.add(p.id);
+      };
+
+      // Share listener
+      document.getElementById('share-prop-btn').onclick = () => {
+        navigator.clipboard?.writeText(window.location.href);
+        showToast('Property link copied to clipboard!', 'info');
+      };
+
+      // Inquire listener
+      document.getElementById('inquire-btn').onclick = () => {
+        showToast(`Consultation inquiry created for agent ${p.agent?.name || 'advisor'}. We will reach out shortly.`, 'success');
+      };
+    }
+
+    function updateSaveButton(isSaved) {
+      const heart = document.getElementById('save-heart-icon');
+      const text = document.querySelector('#save-prop-btn span:last-child');
+      if (isSaved) {
+        heart.textContent = '❤️';
+        text.textContent = 'Saved in Wishlist';
+      } else {
+        heart.textContent = '♡';
+        text.textContent = 'Save to Wishlist';
+      }
+    }
+
+    function initMiniMap(p) {
+      if (!p.latitude || !p.longitude) return;
+      const map = new maplibregl.Map({
+        container: 'property-minimap',
+        style: {
+          version: 8,
+          sources: {
+            'osm-tiles': {
+              type: 'raster',
+              tiles: ['https://tile.openstreetmap.org/{z}/{x}/{y}.png'],
+              tileSize: 256,
+              attribution: '&copy; OpenStreetMap Contributors'
+            }
+          },
+          layers: [{
+            id: 'osm-tiles-layer',
+            type: 'raster',
+            source: 'osm-tiles',
+            minzoom: 0,
+            maxzoom: 19
+          }]
+        },
+        center: [p.longitude, p.latitude],
+        zoom: 13
+      });
+
+      new maplibregl.Marker({ color: '#C9A96E' })
+        .setLngLat([p.longitude, p.latitude])
+        .addTo(map);
+    }
+
+    function loadSimilarProperties(p) {
+      const container = document.getElementById('similar-properties-grid');
+      const similar = mockProperties
+        .filter(item => item.id !== p.id)
+        .slice(0, 3);
+
+      container.innerHTML = similar.map((item, idx) => createPropertyCardHTML(item, idx)).join('');
+      attachCardEventListeners(container);
+    }
+
+    document.addEventListener('DOMContentLoaded', loadProperty);
+  </script>
+</body>
+</html>

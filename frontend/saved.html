@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Saved Properties & Collections — AI Real Estate Explorer</title>
+  <meta name="description" content="Manage your saved properties, organize custom investment collections, and track price changes across shortlists.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>❤️</text></svg>">
+</head>
+<body>
+
+  <!-- Sticky Navigation -->
+  <header class="nav">
+    <div class="container nav-inner">
+      <a href="index.html" class="nav-logo">
+        <div class="nav-logo-icon">AI</div>
+        <span>Estate<span class="accent">Explorer</span></span>
+      </a>
+
+      <nav>
+        <ul class="nav-links">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="explore.html">Explore</a></li>
+          <li><a href="properties.html">Properties</a></li>
+          <li><a href="advisor.html">AI Advisor</a></li>
+          <li><a href="market.html">Market Insights</a></li>
+          <li><a href="reports.html">Reports</a></li>
+          <li><a href="saved.html" class="active">Saved</a></li>
+        </ul>
+      </nav>
+
+      <div class="nav-actions">
+        <button type="button" class="theme-toggle" aria-label="Toggle Theme">🌙</button>
+        <a href="properties.html" class="btn btn-secondary btn-sm">Find More</a>
+        <button type="button" class="nav-mobile-toggle" aria-label="Toggle Navigation Menu">☰</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="section">
+    <div class="container">
+      
+      <!-- Page Header -->
+      <div class="flex-between items-center flex-wrap gap-md mb-md">
+        <div>
+          <span class="section-eyebrow">Personal Shortlist</span>
+          <h1>Saved Properties & Collections</h1>
+          <p class="text-secondary">Organize your favorite luxury listings and create custom portfolios.</p>
+        </div>
+        <div>
+          <button type="button" id="new-collection-btn" class="btn btn-gold">
+            + New Collection
+          </button>
+        </div>
+      </div>
+
+      <!-- Collections Section -->
+      <div class="mb-lg">
+        <h3 class="mb-sm">My Collections</h3>
+        <div id="collections-grid" class="grid-4">
+          <div class="card card-hover" style="border-style:dashed; cursor:pointer;" id="create-col-card">
+            <div style="font-size:2rem; margin-bottom:0.5rem; color:var(--accent);">＋</div>
+            <h4>Create Portfolio</h4>
+            <p style="font-size:0.8rem; color:var(--text-muted);">Organize by city, budget, or family needs</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Saved Properties Horizontal List -->
+      <div>
+        <div class="flex-between items-center mb-sm">
+          <h3 style="margin-bottom:0;">All Saved Properties</h3>
+          <span id="saved-count-badge" class="tag">0 Properties</span>
+        </div>
+
+        <div id="saved-properties-list" class="flex flex-col gap-md">
+          <div class="skeleton" style="height:160px; border-radius:var(--radius-md);"></div>
+        </div>
+
+        <!-- Empty State -->
+        <div id="saved-empty-state" class="card text-center" style="display:none; padding:4rem 2rem;">
+          <div style="font-size:3rem; margin-bottom:1rem;">❤️</div>
+          <h2>Your Wishlist is Empty</h2>
+          <p style="color:var(--text-muted); max-width:440px; margin:0 auto 1.5rem auto;">
+            Click the heart icon on any property card or detail page to curate your portfolio.
+          </p>
+          <a href="properties.html" class="btn btn-primary">Browse Properties ➔</a>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Create Collection Modal -->
+  <div class="modal-backdrop" id="col-modal" style="display:none;">
+    <div class="modal-content">
+      <button type="button" class="modal-close" id="close-col-modal">&times;</button>
+      <h3 class="mb-sm">Create New Collection</h3>
+      <p class="text-secondary mb-md">Group properties together for specific projects, co-investors, or family decisions.</p>
+      
+      <form id="col-form">
+        <div class="form-group">
+          <label class="form-label" for="col-name">Collection Name</label>
+          <input type="text" id="col-name" class="input" placeholder="e.g. Clifton Family Shortlist" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="col-desc">Description (Optional)</label>
+          <input type="text" id="col-desc" class="input" placeholder="e.g. 4+ beds, oceanfront view, high security">
+        </div>
+        <div class="flex justify-between items-center mt-md">
+          <button type="button" class="btn btn-ghost" id="cancel-col-modal">Cancel</button>
+          <button type="submit" class="btn btn-gold">Create Collection</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Global Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="index.html" class="nav-logo" style="margin-bottom: 1rem;">
+            <div class="nav-logo-icon">AI</div>
+            <span>Estate<span class="accent">Explorer</span></span>
+          </a>
+          <p>Production-grade AI property intelligence and transparent matching platform.</p>
+        </div>
+        <div>
+          <h4 class="footer-heading">Platform</h4>
+          <ul class="footer-links">
+            <li><a href="advisor.html">AI Questionnaire</a></li>
+            <li><a href="properties.html">Catalog</a></li>
+            <li><a href="market.html">Market Insights</a></li>
+            <li><a href="reports.html">Reports</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="footer-heading">Hubs</h4>
+          <ul class="footer-links">
+            <li><a href="properties.html?city=Karachi">Karachi</a></li>
+            <li><a href="properties.html?city=Lahore">Lahore</a></li>
+            <li><a href="properties.html?city=Dubai">Dubai</a></li>
+            <li><a href="properties.html?city=London">London</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="footer-heading">Legal</h4>
+          <ul class="footer-links">
+            <li><a href="privacy.html">Privacy</a></li>
+            <li><a href="terms.html">Terms [Demo]</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <div>&copy; 2024 AI Real Estate Explorer. All listings are for demonstration purposes [Demo Dataset].</div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Script Logic -->
+  <script type="module">
+    import api from './js/api.js';
+    import { formatPrice, formatArea, capitalize, showToast, toggleSave } from './js/app.js';
+    import { mockProperties } from './js/mock_data.js';
+
+    let savedProperties = [];
+    let collections = [
+      { id: 'col-1', name: 'Primary Residences', count: 2, icon: '🏡' },
+      { id: 'col-2', name: 'Overseas Yield Assets', count: 1, icon: '💼' }
+    ];
+
+    async function loadSavedData() {
+      let savedIds = JSON.parse(localStorage.getItem('savedIds') || '[]');
+      if (savedIds.length === 0) {
+        // Pre-fill prop-001 and prop-002 if brand new session so demo looks great
+        savedIds = ['prop-001', 'prop-002'];
+        localStorage.setItem('savedIds', JSON.stringify(savedIds));
+      }
+
+      // Try API saved items
+      try {
+        const res = await api.saved.list();
+        if (res && res.length > 0) {
+          savedProperties = res;
+        }
+      } catch(e) {}
+
+      if (savedProperties.length === 0) {
+        savedProperties = mockProperties.filter(p => savedIds.includes(p.id));
+      }
+
+      renderCollections();
+      renderSavedList();
+    }
+
+    function renderCollections() {
+      const grid = document.getElementById('collections-grid');
+      const customCols = JSON.parse(localStorage.getItem('user_collections') || 'null');
+      if (customCols) collections = customCols;
+
+      let html = collections.map(c => `
+        <div class="card card-hover">
+          <div style="font-size:2rem; margin-bottom:0.5rem;">${c.icon || '📁'}</div>
+          <h4>${c.name}</h4>
+          <p style="font-size:0.8rem; color:var(--text-muted);">${c.count || 0} Saved Listings</p>
+        </div>
+      `).join('');
+
+      html += `
+        <div class="card card-hover" style="border-style:dashed; cursor:pointer;" id="create-col-trigger">
+          <div style="font-size:2rem; margin-bottom:0.5rem; color:var(--accent);">＋</div>
+          <h4>Create Portfolio</h4>
+          <p style="font-size:0.8rem; color:var(--text-muted);">Organize by city, budget, or family needs</p>
+        </div>
+      `;
+
+      grid.innerHTML = html;
+      document.getElementById('create-col-trigger')?.addEventListener('click', openModal);
+    }
+
+    function renderSavedList() {
+      const list = document.getElementById('saved-properties-list');
+      const emptyState = document.getElementById('saved-empty-state');
+      const countBadge = document.getElementById('saved-count-badge');
+
+      countBadge.textContent = `${savedProperties.length} ${savedProperties.length === 1 ? 'Property' : 'Properties'}`;
+
+      if (savedProperties.length === 0) {
+        list.style.display = 'none';
+        emptyState.style.display = 'block';
+        return;
+      }
+
+      list.style.display = 'flex';
+      emptyState.style.display = 'none';
+
+      list.innerHTML = savedProperties.map(p => {
+        const img = (p.images && p.images[0]) || 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=400&q=80';
+        return `
+          <article class="property-card property-card--horizontal" data-id="${p.id}">
+            <div class="property-card__image-wrap">
+              <img src="${img}" alt="${p.title}" class="property-card__image" loading="lazy">
+              <span class="badge ${p.listing_type === 'rent' ? 'badge-rent' : 'badge-sale'}" style="position:absolute; top:12px; left:12px;">
+                ${p.listing_type === 'rent' ? 'For Rent' : 'For Sale'}
+              </span>
+            </div>
+            <div class="property-card__body">
+              <div class="property-card__price-row">
+                <div class="property-card__price">${formatPrice(p.price, p.currency)}</div>
+                <span class="tag">${capitalize(p.property_type || 'Property')}</span>
+              </div>
+              <h3 class="property-card__title">
+                <a href="property.html?id=${p.id}">${p.title}</a>
+              </h3>
+              <div class="property-card__location">
+                📍 ${p.address || ''}, ${p.city || ''}, ${p.country || ''}
+              </div>
+              <div class="property-card__specs">
+                <span>🛏️ ${p.bedrooms || 'N/A'} Beds</span>
+                <span>🛁 ${p.bathrooms || 'N/A'} Baths</span>
+                <span>📐 ${p.area_sqft ? formatArea(p.area_sqft) : 'N/A'}</span>
+              </div>
+              <div class="property-card__actions mt-sm">
+                <a href="property.html?id=${p.id}" class="btn btn-sm btn-primary">View Listing</a>
+                <button type="button" class="btn btn-sm btn-ghost remove-saved-btn" data-id="${p.id}" style="color:var(--danger);">
+                  Remove from Saved 🗑️
+                </button>
+              </div>
+            </div>
+          </article>
+        `;
+      }).join('');
+
+      // Remove listener
+      list.querySelectorAll('.remove-saved-btn').forEach(btn => {
+        btn.onclick = () => {
+          const id = btn.dataset.id;
+          toggleSave(id, null);
+          savedProperties = savedProperties.filter(p => p.id !== id);
+          renderSavedList();
+        };
+      });
+    }
+
+    function openModal() {
+      document.getElementById('col-modal').style.display = 'flex';
+    }
+
+    function closeModal() {
+      document.getElementById('col-modal').style.display = 'none';
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      loadSavedData();
+
+      document.getElementById('new-collection-btn')?.addEventListener('click', openModal);
+      document.getElementById('close-col-modal')?.addEventListener('click', closeModal);
+      document.getElementById('cancel-col-modal')?.addEventListener('click', closeModal);
+
+      document.getElementById('col-form')?.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const name = document.getElementById('col-name').value.trim();
+        if (name) {
+          collections.push({ id: 'col-' + Date.now(), name, count: 0, icon: '📁' });
+          localStorage.setItem('user_collections', JSON.stringify(collections));
+          renderCollections();
+          closeModal();
+          showToast(`Collection "${name}" created!`, 'success');
+        }
+      });
+    });
+  </script>
+</body>
+</html>

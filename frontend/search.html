@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Saved Search Profiles & Sessions — AI Real Estate Explorer</title>
+  <meta name="description" content="Resume saved AI property discovery sessions, review previous questionnaire preferences, and track matching inventory.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔎</text></svg>">
+</head>
+<body>
+
+  <!-- Sticky Navigation -->
+  <header class="nav">
+    <div class="container nav-inner">
+      <a href="index.html" class="nav-logo">
+        <div class="nav-logo-icon">AI</div>
+        <span>Estate<span class="accent">Explorer</span></span>
+      </a>
+
+      <nav>
+        <ul class="nav-links">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="explore.html">Explore</a></li>
+          <li><a href="properties.html">Properties</a></li>
+          <li><a href="advisor.html">AI Advisor</a></li>
+          <li><a href="market.html">Market Insights</a></li>
+          <li><a href="reports.html">Reports</a></li>
+          <li><a href="saved.html">Saved</a></li>
+        </ul>
+      </nav>
+
+      <div class="nav-actions">
+        <button type="button" class="theme-toggle" aria-label="Toggle Theme">🌙</button>
+        <a href="advisor.html" class="btn btn-gold btn-sm">New Search</a>
+        <button type="button" class="nav-mobile-toggle" aria-label="Toggle Navigation Menu">☰</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="section">
+    <div class="container" style="max-width: 900px;">
+      
+      <!-- Page Header -->
+      <div class="flex-between items-center flex-wrap gap-md mb-lg">
+        <div>
+          <span class="section-eyebrow">Search History & Sessions</span>
+          <h1>Saved Search Profiles</h1>
+          <p class="text-secondary">Resume prior AI discovery sessions or update your lifestyle preferences.</p>
+        </div>
+        <a href="advisor.html" class="btn btn-gold">+ Launch New Search</a>
+      </div>
+
+      <!-- Search Profiles List -->
+      <div id="search-sessions-list" class="flex flex-col gap-md">
+        <!-- Rendered by JS -->
+      </div>
+
+      <!-- Empty State -->
+      <div id="search-empty-state" class="card text-center" style="display:none; padding:4rem 2rem;">
+        <div style="font-size:3.5rem; margin-bottom:1rem;">🔎</div>
+        <h2>No Saved Search Profiles</h2>
+        <p style="color:var(--text-muted); max-width:480px; margin:0 auto 1.5rem auto;">
+          Complete the guided AI questionnaire or natural language search to save search sessions for later review.
+        </p>
+        <a href="advisor.html" class="btn btn-primary">Start AI Questionnaire ➔</a>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Global Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-bottom" style="border:none; padding-top:0;">
+        <div>&copy; 2024 AI Real Estate Explorer. All data presented is for demonstration purposes [Demo Dataset].</div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Script Logic -->
+  <script type="module">
+    import api from './js/api.js';
+    import { formatPrice, showToast } from './js/app.js';
+
+    let sessions = [];
+
+    async function loadSessions() {
+      const container = document.getElementById('search-sessions-list');
+      const emptyState = document.getElementById('search-empty-state');
+
+      // Check localStorage for saved sessions
+      const local = JSON.parse(localStorage.getItem('user_saved_searches') || '[]');
+      const currentPrefs = JSON.parse(localStorage.getItem('user_property_prefs') || 'null');
+
+      sessions = local;
+      if (currentPrefs && !sessions.some(s => s.id === 'current')) {
+        sessions.unshift({
+          id: 'current',
+          name: `${currentPrefs.city || 'Karachi'} ${currentPrefs.property_type || 'Villa'} Preference`,
+          created_at: new Date().toISOString(),
+          prefs: currentPrefs
+        });
+      }
+
+      if (sessions.length === 0) {
+        // Fallback demo session so UI is never empty
+        sessions = [
+          {
+            id: 'demo-1',
+            name: 'Karachi DHA Phase 8 Villa Acquisition',
+            created_at: '2024-09-15T10:00:00Z',
+            prefs: {
+              intent: 'buy',
+              city: 'Karachi',
+              property_type: 'villa',
+              max_budget: 185000000,
+              currency: 'PKR',
+              bedrooms: 6
+            }
+          },
+          {
+            id: 'demo-2',
+            name: 'Downtown Dubai Luxury Rental Apartment',
+            created_at: '2024-09-12T14:30:00Z',
+            prefs: {
+              intent: 'rent',
+              city: 'Dubai',
+              property_type: 'apartment',
+              max_budget: 300000,
+              currency: 'AED',
+              bedrooms: 2
+            }
+          }
+        ];
+        localStorage.setItem('user_saved_searches', JSON.stringify(sessions));
+      }
+
+      renderSessions();
+    }
+
+    function renderSessions() {
+      const container = document.getElementById('search-sessions-list');
+      const emptyState = document.getElementById('search-empty-state');
+
+      if (sessions.length === 0) {
+        container.style.display = 'none';
+        emptyState.style.display = 'block';
+        return;
+      }
+
+      container.style.display = 'flex';
+      emptyState.style.display = 'none';
+
+      container.innerHTML = sessions.map(s => {
+        const p = s.prefs || {};
+        return `
+          <div class="card card-hover" style="padding:1.5rem;" data-id="${s.id}">
+            <div class="flex-between items-start flex-wrap gap-sm mb-sm">
+              <div>
+                <span class="tag" style="font-size:0.75rem; margin-bottom:0.25rem;">Saved Search Profile</span>
+                <h3 style="font-size:1.25rem;">${s.name || 'Custom Search'}</h3>
+              </div>
+              <span style="font-size:0.8rem; color:var(--text-muted);">${new Date(s.created_at).toLocaleDateString()}</span>
+            </div>
+
+            <div class="flex flex-wrap gap-xs mb-md">
+              <span class="tag">📍 ${p.city || 'Any City'}</span>
+              <span class="tag">🏷️ ${p.property_type ? p.property_type.toUpperCase() : 'Property'}</span>
+              <span class="tag">💰 Max ${formatPrice(p.max_budget, p.currency || 'PKR', true)}</span>
+              ${p.bedrooms ? `<span class="tag">🛏️ ${p.bedrooms} Beds</span>` : ''}
+              <span class="tag">🔑 Intent: ${(p.intent || 'Buy').toUpperCase()}</span>
+            </div>
+
+            <div class="flex-between items-center" style="border-top:1px solid var(--border); padding-top:0.85rem;">
+              <button type="button" class="btn btn-sm btn-ghost delete-session-btn" data-id="${s.id}" style="color:var(--danger); font-size:0.8rem;">
+                Delete Profile 🗑️
+              </button>
+              <div class="flex gap-sm">
+                <a href="properties.html?city=${encodeURIComponent(p.city || '')}&type=${encodeURIComponent(p.property_type || '')}" class="btn btn-sm btn-secondary">
+                  View Listings
+                </a>
+                <button type="button" class="btn btn-sm btn-primary resume-session-btn" data-id="${s.id}">
+                  Resume in Advisor ➔
+                </button>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      // Event Listeners
+      container.querySelectorAll('.resume-session-btn').forEach(btn => {
+        btn.onclick = () => {
+          const id = btn.dataset.id;
+          const target = sessions.find(s => s.id === id);
+          if (target && target.prefs) {
+            localStorage.setItem('user_property_prefs', JSON.stringify(target.prefs));
+            window.location.href = 'advisor.html';
+          }
+        };
+      });
+
+      container.querySelectorAll('.delete-session-btn').forEach(btn => {
+        btn.onclick = () => {
+          const id = btn.dataset.id;
+          sessions = sessions.filter(s => s.id !== id);
+          localStorage.setItem('user_saved_searches', JSON.stringify(sessions));
+          renderSessions();
+          showToast('Search profile removed.', 'info');
+        };
+      });
+    }
+
+    document.addEventListener('DOMContentLoaded', loadSessions);
+  </script>
+</body>
+</html>

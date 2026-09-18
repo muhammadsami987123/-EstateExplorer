@@ -1,0 +1,890 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Property Advisor — Intelligent Conversational Discovery</title>
+  <meta name="description" content="Engage with our AI-guided property consultant. Discover luxury real estate matching your lifestyle, investment criteria, and budget.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✨</text></svg>">
+  <style>
+    .advisor-shell {
+      min-height: calc(100vh - 72px);
+      display: grid;
+      grid-template-columns: 1fr 420px;
+    }
+    .advisor-main {
+      padding: 3.5rem 5rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      background-color: var(--bg);
+    }
+    .advisor-sidebar {
+      background-color: var(--surface);
+      border-left: 1px solid var(--border);
+      padding: 2.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+      overflow-y: auto;
+    }
+    .question-card-option {
+      background: var(--surface);
+      border: 2px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.8rem 1.4rem;
+      cursor: pointer;
+      transition: all var(--transition);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 0.75rem;
+    }
+    .question-card-option:hover {
+      border-color: var(--accent);
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-md);
+    }
+    .question-card-option.active {
+      border-color: var(--accent);
+      background-color: var(--accent-light);
+    }
+    .question-card-icon {
+      font-size: 2.4rem;
+    }
+    .question-card-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+    .question-card-desc {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+    .preset-budget-btn {
+      padding: 0.4rem 0.8rem;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: all var(--transition);
+    }
+    .preset-budget-btn:hover {
+      border-color: var(--accent);
+      color: var(--accent-dark);
+    }
+    .profile-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      padding: 0.35rem 0.75rem;
+      border-radius: var(--radius-full);
+      font-size: 0.8rem;
+      color: var(--text-primary);
+      cursor: pointer;
+    }
+    .profile-pill:hover {
+      border-color: var(--accent);
+    }
+    .feature-checkbox-label {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      padding: 0.75rem 1rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      font-size: 0.9rem;
+      transition: all var(--transition);
+    }
+    .feature-checkbox-label:hover {
+      border-color: var(--accent);
+    }
+    .feature-checkbox-label input:checked + span {
+      font-weight: 600;
+      color: var(--accent-dark);
+    }
+    @media (max-width: 1024px) {
+      .advisor-shell {
+        grid-template-columns: 1fr;
+      }
+      .advisor-main {
+        padding: 2.5rem 1.5rem;
+      }
+      .advisor-sidebar {
+        border-left: none;
+        border-top: 1px solid var(--border);
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Sticky Navigation -->
+  <header class="nav">
+    <div class="container nav-inner">
+      <a href="index.html" class="nav-logo">
+        <div class="nav-logo-icon">AI</div>
+        <span>Estate<span class="accent">Explorer</span></span>
+      </a>
+
+      <nav>
+        <ul class="nav-links">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="explore.html">Explore</a></li>
+          <li><a href="properties.html">Properties</a></li>
+          <li><a href="advisor.html" class="active">AI Advisor</a></li>
+          <li><a href="market.html">Market Insights</a></li>
+          <li><a href="reports.html">Reports</a></li>
+          <li><a href="saved.html">Saved</a></li>
+        </ul>
+      </nav>
+
+      <div class="nav-actions">
+        <button type="button" class="theme-toggle" aria-label="Toggle Theme">🌙</button>
+        <a href="properties.html" class="btn btn-secondary btn-sm">Catalog</a>
+        <button type="button" class="nav-mobile-toggle" aria-label="Toggle Navigation Menu">☰</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="advisor-shell">
+    
+    <!-- Left Question Panel (60%) -->
+    <div class="advisor-main">
+      
+      <!-- Top Progress Bar -->
+      <div>
+        <div class="flex-between items-center mb-xs">
+          <span class="section-eyebrow" style="margin-bottom:0;">Intelligent Property Questionnaire</span>
+          <span class="advisor-progress-counter" id="step-counter">01 / 09</span>
+        </div>
+        <div class="advisor-progress-track">
+          <div class="advisor-progress-bar" id="progress-bar-fill" style="width: 11%;"></div>
+        </div>
+      </div>
+
+      <!-- Question Stage (Dynamic Container) -->
+      <div id="question-container" style="margin: 3rem 0; min-height: 420px; display:flex; flex-direction:column; justify-content:center;">
+        <!-- Injected via JavaScript -->
+      </div>
+
+      <!-- Bottom Nav Controls -->
+      <div class="flex-between items-center" style="border-top: 1px solid var(--border); padding-top: 1.5rem;">
+        <button type="button" id="prev-step-btn" class="btn btn-ghost" style="visibility: hidden;">
+          ← Previous
+        </button>
+        <div class="flex items-center gap-sm">
+          <button type="button" id="skip-step-btn" class="btn btn-ghost btn-sm" style="font-size:0.85rem;">
+            Skip this step
+          </button>
+          <button type="button" id="next-step-btn" class="btn btn-gold">
+            <span>Continue</span> →
+          </button>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Right Profile & AI Advisor Panel (40%) -->
+    <aside class="advisor-sidebar">
+      
+      <!-- Live Search Profile -->
+      <div>
+        <div class="flex-between items-center mb-sm">
+          <h4 style="font-size:1.05rem;">🎯 Search Profile</h4>
+          <button type="button" id="reset-profile-btn" class="btn btn-ghost btn-sm" style="font-size:0.75rem; padding:0.2rem 0.5rem;">Reset</button>
+        </div>
+        <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:1rem;">
+          Your preferences are updating dynamically as you answer questions. Click any tag to jump back and edit.
+        </p>
+        <div id="live-profile-tags" class="flex flex-wrap gap-xs">
+          <span class="tag" style="font-style:italic; font-size:0.8rem;">Answering question 1...</span>
+        </div>
+      </div>
+
+      <!-- AI Real Estate Consultant Chat -->
+      <div class="ai-advisor-chat">
+        <div class="ai-advisor-chat__header">
+          <span style="font-size:1.1rem;">🤖</span>
+          <div>
+            <div style="font-weight:600; line-height:1.2;">AI Real Estate Consultant</div>
+            <div style="font-size:0.75rem; color:var(--success);">● Active & Analyzing Criteria</div>
+          </div>
+        </div>
+        
+        <div class="ai-advisor-chat__messages" id="chat-messages">
+          <div class="ai-bubble ai-bubble--bot">
+            Greetings! I am your AI property advisor. Answer the guided questions or message me directly anytime with specific requests!
+          </div>
+        </div>
+
+        <form id="chat-input-form" class="ai-advisor-chat__input-row">
+          <input type="text" id="chat-user-msg" class="input" style="padding:0.4rem 0.75rem; font-size:0.85rem;" placeholder="Ask a question or specify..." autocomplete="off">
+          <button type="submit" class="btn btn-gold btn-sm" style="padding:0.4rem 0.85rem;">Send</button>
+        </form>
+      </div>
+
+      <!-- Natural Language Quick Extraction -->
+      <div class="card" style="padding:1.25rem;">
+        <h5 style="margin-bottom:0.5rem; font-size:0.9rem;">⚡ Or Describe in Words</h5>
+        <textarea id="sidebar-nl-text" class="textarea" rows="2" style="font-size:0.825rem;" placeholder="e.g. 3-bed sea view flat in Dubai under 300K AED"></textarea>
+        <button type="button" id="sidebar-nl-apply" class="btn btn-secondary btn-sm mt-sm" style="width:100%;">
+          Auto-Fill Questionnaire
+        </button>
+      </div>
+
+    </aside>
+
+  </main>
+
+  <!-- Script Logic -->
+  <script type="module">
+    import api from './js/api.js';
+    import { formatPrice, showToast } from './js/app.js';
+    import { mockProperties, mockLocations } from './js/mock_data.js';
+
+    class PropertyAdvisor {
+      constructor() {
+        this.step = 1;
+        this.totalSteps = 9;
+        this.preferences = {
+          intent: 'buy',
+          purpose: 'personal',
+          property_type: 'villa',
+          country: 'Pakistan',
+          city: 'Karachi',
+          area: '',
+          currency: 'PKR',
+          min_budget: null,
+          max_budget: 200000000,
+          bedrooms: 4,
+          bathrooms: 4,
+          features: ['Swimming Pool', 'Private Garden']
+        };
+
+        this.init();
+      }
+
+      init() {
+        // Load saved preferences if any
+        const saved = localStorage.getItem('user_property_prefs');
+        if (saved) {
+          try {
+            this.preferences = { ...this.preferences, ...JSON.parse(saved) };
+          } catch(e) {}
+        }
+
+        // Check if URL has NL query
+        const params = new URLSearchParams(window.location.search);
+        if (params.has('nl')) {
+          this.handleNLInput(params.get('nl'));
+        }
+
+        this.bindEvents();
+        this.renderStep();
+        this.updateProfileTags();
+      }
+
+      bindEvents() {
+        document.getElementById('prev-step-btn').addEventListener('click', () => this.prevStep());
+        document.getElementById('next-step-btn').addEventListener('click', () => this.nextStep());
+        document.getElementById('skip-step-btn').addEventListener('click', () => this.skipStep());
+        document.getElementById('reset-profile-btn').addEventListener('click', () => this.resetProfile());
+
+        // Chat Form
+        document.getElementById('chat-input-form').addEventListener('submit', (e) => {
+          e.preventDefault();
+          this.handleChatMessage();
+        });
+
+        // Sidebar NL Apply
+        document.getElementById('sidebar-nl-apply').addEventListener('click', () => {
+          const val = document.getElementById('sidebar-nl-text').value.trim();
+          if (val) this.handleNLInput(val);
+        });
+      }
+
+      updateProgress() {
+        const counter = document.getElementById('step-counter');
+        const bar = document.getElementById('progress-bar-fill');
+        const prevBtn = document.getElementById('prev-step-btn');
+        const nextBtn = document.getElementById('next-step-btn');
+
+        counter.textContent = `0${this.step} / 0${this.totalSteps}`;
+        const pct = Math.round((this.step / this.totalSteps) * 100);
+        bar.style.width = `${pct}%`;
+
+        prevBtn.style.visibility = this.step > 1 ? 'visible' : 'hidden';
+
+        if (this.step === this.totalSteps) {
+          nextBtn.innerHTML = '<span>Find My Matches ✨</span>';
+        } else {
+          nextBtn.innerHTML = '<span>Continue</span> →';
+        }
+      }
+
+      animateTransition(callback) {
+        const container = document.getElementById('question-container');
+        container.animate([
+          { opacity: 1, transform: 'translateY(0)' },
+          { opacity: 0, transform: 'translateY(-12px)' }
+        ], { duration: 180, easing: 'ease-out' }).onfinish = () => {
+          callback();
+          container.animate([
+            { opacity: 0, transform: 'translateY(12px)' },
+            { opacity: 1, transform: 'translateY(0)' }
+          ], { duration: 220, easing: 'ease-out' });
+        };
+      }
+
+      renderStep() {
+        this.updateProgress();
+        this.animateTransition(() => {
+          const container = document.getElementById('question-container');
+          switch (this.step) {
+            case 1: this.renderStep1(container); break;
+            case 2: this.renderStep2(container); break;
+            case 3: this.renderStep3(container); break;
+            case 4: this.renderStep4(container); break;
+            case 5: this.renderStep5(container); break;
+            case 6: this.renderStep6(container); break;
+            case 7: this.renderStep7(container); break;
+            case 8: this.renderStep8(container); break;
+            case 9: this.renderStep9(container); break;
+          }
+        });
+      }
+
+      // Step 1: Intent
+      renderStep1(container) {
+        container.innerHTML = `
+          <div class="question-stage">
+            <h2 class="question-title">What are you looking for?</h2>
+            <p class="question-subtitle">Select your primary goal so we can tailor the subsequent criteria and heuristics.</p>
+            <div class="select-card-grid">
+              <div class="question-card-option ${this.preferences.intent === 'buy' ? 'active' : ''}" data-intent="buy">
+                <span class="question-card-icon">🏷️</span>
+                <span class="question-card-title">Buy a Property</span>
+                <span class="question-card-desc">Acquire high-value residential or commercial estate</span>
+              </div>
+              <div class="question-card-option ${this.preferences.intent === 'rent' ? 'active' : ''}" data-intent="rent">
+                <span class="question-card-icon">🔑</span>
+                <span class="question-card-title">Rent a Property</span>
+                <span class="question-card-desc">Lease luxury apartments, penthouses, or villas</span>
+              </div>
+              <div class="question-card-option ${this.preferences.intent === 'invest' ? 'active' : ''}" data-intent="invest">
+                <span class="question-card-icon">📈</span>
+                <span class="question-card-title">Pure Investment</span>
+                <span class="question-card-desc">High rental yield and maximum capital appreciation</span>
+              </div>
+              <div class="question-card-option ${this.preferences.intent === 'explore' ? 'active' : ''}" data-intent="explore">
+                <span class="question-card-icon">🧭</span>
+                <span class="question-card-title">Just Exploring</span>
+                <span class="question-card-desc">Browse market dynamics and price benchmarks</span>
+              </div>
+            </div>
+          </div>
+        `;
+
+        container.querySelectorAll('.question-card-option').forEach(el => {
+          el.onclick = () => {
+            container.querySelectorAll('.question-card-option').forEach(c => c.classList.remove('active'));
+            el.classList.add('active');
+            this.preferences.intent = el.dataset.intent;
+            this.updateProfileTags();
+            setTimeout(() => this.nextStep(), 250);
+          };
+        });
+      }
+
+      // Step 2: Purpose
+      renderStep2(container) {
+        container.innerHTML = `
+          <div class="question-stage">
+            <h2 class="question-title">What is the purpose of this property?</h2>
+            <p class="question-subtitle">This helps our AI balance lifestyle amenities versus return on investment (ROI).</p>
+            <div class="select-card-grid">
+              <div class="question-card-option ${this.preferences.purpose === 'personal' ? 'active' : ''}" data-purpose="personal">
+                <span class="question-card-icon">🏡</span>
+                <span class="question-card-title">Personal Residence</span>
+                <span class="question-card-desc">For myself and my family to live and enjoy</span>
+              </div>
+              <div class="question-card-option ${this.preferences.purpose === 'investment' ? 'active' : ''}" data-purpose="investment">
+                <span class="question-card-icon">📊</span>
+                <span class="question-card-title">Capital Investment</span>
+                <span class="question-card-desc">To generate rental income and asset appreciation</span>
+              </div>
+              <div class="question-card-option ${this.preferences.purpose === 'both' ? 'active' : ''}" data-purpose="both">
+                <span class="question-card-icon">✨</span>
+                <span class="question-card-title">Both / Hybrid</span>
+                <span class="question-card-desc">Live now, lease or liquidate later</span>
+              </div>
+            </div>
+          </div>
+        `;
+
+        container.querySelectorAll('.question-card-option').forEach(el => {
+          el.onclick = () => {
+            container.querySelectorAll('.question-card-option').forEach(c => c.classList.remove('active'));
+            el.classList.add('active');
+            this.preferences.purpose = el.dataset.purpose;
+            this.updateProfileTags();
+            setTimeout(() => this.nextStep(), 250);
+          };
+        });
+      }
+
+      // Step 3: Property Type
+      renderStep3(container) {
+        const types = [
+          { key: 'house', icon: '🏡', label: 'House / Bungalow' },
+          { key: 'apartment', icon: '🏢', label: 'Apartment / Flat' },
+          { key: 'villa', icon: '🏰', label: 'Luxury Villa' },
+          { key: 'plot', icon: '📐', label: 'Plot / Land' },
+          { key: 'office', icon: '💼', label: 'Office / Corporate' },
+          { key: 'shop', icon: '🛍️', label: 'Retail Shop' }
+        ];
+
+        container.innerHTML = `
+          <div class="question-stage">
+            <h2 class="question-title">What type of property are you looking for?</h2>
+            <p class="question-subtitle">Select the architectural category or asset class.</p>
+            <div class="select-card-grid" style="grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));">
+              ${types.map(t => `
+                <div class="question-card-option ${this.preferences.property_type === t.key ? 'active' : ''}" data-type="${t.key}">
+                  <span class="question-card-icon">${t.icon}</span>
+                  <span class="question-card-title">${t.label}</span>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        `;
+
+        container.querySelectorAll('.question-card-option').forEach(el => {
+          el.onclick = () => {
+            container.querySelectorAll('.question-card-option').forEach(c => c.classList.remove('active'));
+            el.classList.add('active');
+            this.preferences.property_type = el.dataset.type;
+            this.updateProfileTags();
+            setTimeout(() => this.nextStep(), 250);
+          };
+        });
+      }
+
+      // Step 4: Country
+      renderStep4(container) {
+        const countries = [
+          { name: 'Pakistan', flag: '🇵🇰', currency: 'PKR', desc: 'Karachi, Lahore, Islamabad' },
+          { name: 'UAE', flag: '🇦🇪', currency: 'AED', desc: 'Dubai, Abu Dhabi' },
+          { name: 'UK', flag: '🇬🇧', currency: 'GBP', desc: 'London, Manchester' }
+        ];
+
+        container.innerHTML = `
+          <div class="question-stage">
+            <h2 class="question-title">In which country are you searching?</h2>
+            <p class="question-subtitle">Our database indexes premier luxury corridors across these three key territories.</p>
+            <div class="select-card-grid">
+              ${countries.map(c => `
+                <div class="question-card-option ${this.preferences.country === c.name ? 'active' : ''}" data-country="${c.name}" data-currency="${c.currency}">
+                  <span style="font-size:3rem;">${c.flag}</span>
+                  <span class="question-card-title">${c.name}</span>
+                  <span class="question-card-desc">${c.desc}</span>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        `;
+
+        container.querySelectorAll('.question-card-option').forEach(el => {
+          el.onclick = () => {
+            container.querySelectorAll('.question-card-option').forEach(c => c.classList.remove('active'));
+            el.classList.add('active');
+            this.preferences.country = el.dataset.country;
+            this.preferences.currency = el.dataset.currency;
+            this.updateProfileTags();
+            setTimeout(() => this.nextStep(), 250);
+          };
+        });
+      }
+
+      // Step 5: City & Neighborhood
+      renderStep5(container) {
+        const citiesByCountry = {
+          'Pakistan': ['Karachi', 'Lahore', 'Islamabad'],
+          'UAE': ['Dubai', 'Abu Dhabi'],
+          'UK': ['London', 'Manchester']
+        };
+
+        const availableCities = citiesByCountry[this.preferences.country] || ['Karachi', 'Lahore', 'Islamabad', 'Dubai', 'London'];
+
+        container.innerHTML = `
+          <div class="question-stage">
+            <h2 class="question-title">Select your target city & neighborhood</h2>
+            <p class="question-subtitle">Select the city in ${this.preferences.country} where you want to focus.</p>
+            <div class="flex flex-wrap gap-sm mb-md">
+              ${availableCities.map(city => `
+                <button type="button" class="pill-btn ${this.preferences.city === city ? 'selected' : ''} city-pill" data-city="${city}">
+                  ${city}
+                </button>
+              `).join('')}
+            </div>
+
+            <div class="form-group mt-md" style="max-width:400px;">
+              <label class="form-label">Preferred Neighborhood / Sector (Optional)</label>
+              <input type="text" id="target-area-input" class="input" value="${this.preferences.area || ''}" placeholder="e.g. DHA Phase 8, Clifton, Gulberg, Downtown...">
+            </div>
+          </div>
+        `;
+
+        container.querySelectorAll('.city-pill').forEach(pill => {
+          pill.onclick = () => {
+            container.querySelectorAll('.city-pill').forEach(p => p.classList.remove('selected'));
+            pill.classList.add('selected');
+            this.preferences.city = pill.dataset.city;
+            this.updateProfileTags();
+          };
+        });
+
+        document.getElementById('target-area-input')?.addEventListener('input', (e) => {
+          this.preferences.area = e.target.value.trim();
+          this.updateProfileTags();
+        });
+      }
+
+      // Step 6: Budget
+      renderStep6(container) {
+        const isRental = this.preferences.intent === 'rent';
+        const curr = this.preferences.currency || 'PKR';
+
+        container.innerHTML = `
+          <div class="question-stage">
+            <h2 class="question-title">What is your target budget?</h2>
+            <p class="question-subtitle">Specify your price ceiling or budget range in ${curr}.</p>
+            
+            <div class="card" style="max-width:540px; padding:1.5rem;">
+              <div class="grid-2 gap-sm mb-sm">
+                <div class="form-group" style="margin-bottom:0;">
+                  <label class="form-label">Min Budget (${curr})</label>
+                  <input type="number" id="budget-min" class="input" value="${this.preferences.min_budget || ''}" placeholder="e.g. 20000000">
+                </div>
+                <div class="form-group" style="margin-bottom:0;">
+                  <label class="form-label">Max Budget (${curr})</label>
+                  <input type="number" id="budget-max" class="input" value="${this.preferences.max_budget || ''}" placeholder="e.g. 150000000">
+                </div>
+              </div>
+
+              <label class="form-label mt-sm" style="font-size:0.8rem; color:var(--text-muted);">Quick Presets (${curr})</label>
+              <div class="flex flex-wrap gap-xs mt-xs">
+                ${curr === 'PKR' ? `
+                  <button type="button" class="preset-budget-btn" data-min="20000000" data-max="50000000">20M - 50M</button>
+                  <button type="button" class="preset-budget-btn" data-min="50000000" data-max="100000000">50M - 100M</button>
+                  <button type="button" class="preset-budget-btn" data-min="100000000" data-max="200000000">100M - 200M</button>
+                  <button type="button" class="preset-budget-btn" data-min="200000000" data-max="500000000">200M+</button>
+                ` : `
+                  <button type="button" class="preset-budget-btn" data-min="100000" data-max="300000">100K - 300K</button>
+                  <button type="button" class="preset-budget-btn" data-min="300000" data-max="1000000">300K - 1M</button>
+                  <button type="button" class="preset-budget-btn" data-min="1000000" data-max="5000000">1M - 5M</button>
+                `}
+              </div>
+            </div>
+          </div>
+        `;
+
+        document.getElementById('budget-min')?.addEventListener('input', (e) => {
+          this.preferences.min_budget = parseFloat(e.target.value) || null;
+          this.updateProfileTags();
+        });
+
+        document.getElementById('budget-max')?.addEventListener('input', (e) => {
+          this.preferences.max_budget = parseFloat(e.target.value) || null;
+          this.updateProfileTags();
+        });
+
+        container.querySelectorAll('.preset-budget-btn').forEach(btn => {
+          btn.onclick = () => {
+            const min = parseFloat(btn.dataset.min);
+            const max = parseFloat(btn.dataset.max);
+            document.getElementById('budget-min').value = min;
+            document.getElementById('budget-max').value = max;
+            this.preferences.min_budget = min;
+            this.preferences.max_budget = max;
+            this.updateProfileTags();
+          };
+        });
+      }
+
+      // Step 7: Bedrooms
+      renderStep7(container) {
+        const bedOptions = ['Studio', '1', '2', '3', '4', '5', '6+', 'Flexible'];
+
+        container.innerHTML = `
+          <div class="question-stage">
+            <h2 class="question-title">How many bedrooms do you need?</h2>
+            <p class="question-subtitle">Select the accommodation capacity for your household.</p>
+            <div class="pill-group">
+              ${bedOptions.map(opt => `
+                <button type="button" class="pill-btn ${(String(this.preferences.bedrooms) === opt || (opt === '4' && !this.preferences.bedrooms)) ? 'selected' : ''} bed-pill" data-bed="${opt}">
+                  ${opt} ${opt !== 'Studio' && opt !== 'Flexible' ? 'Bedrooms' : ''}
+                </button>
+              `).join('')}
+            </div>
+          </div>
+        `;
+
+        container.querySelectorAll('.bed-pill').forEach(pill => {
+          pill.onclick = () => {
+            container.querySelectorAll('.bed-pill').forEach(p => p.classList.remove('selected'));
+            pill.classList.add('selected');
+            const val = pill.dataset.bed;
+            this.preferences.bedrooms = (val === 'Studio') ? 0 : (val === 'Flexible' ? null : parseInt(val));
+            this.updateProfileTags();
+            setTimeout(() => this.nextStep(), 250);
+          };
+        });
+      }
+
+      // Step 8: Bathrooms
+      renderStep8(container) {
+        const bathOptions = ['1', '2', '3', '4', '5+', 'Flexible'];
+
+        container.innerHTML = `
+          <div class="question-stage">
+            <h2 class="question-title">How many bathrooms?</h2>
+            <p class="question-subtitle">Indicate required ensuite or guest bathroom requirements.</p>
+            <div class="pill-group">
+              ${bathOptions.map(opt => `
+                <button type="button" class="pill-btn ${(String(this.preferences.bathrooms) === opt || (opt === '4' && !this.preferences.bathrooms)) ? 'selected' : ''} bath-pill" data-bath="${opt}">
+                  ${opt} ${opt !== 'Flexible' ? 'Bathrooms' : ''}
+                </button>
+              `).join('')}
+            </div>
+          </div>
+        `;
+
+        container.querySelectorAll('.bath-pill').forEach(pill => {
+          pill.onclick = () => {
+            container.querySelectorAll('.bath-pill').forEach(p => p.classList.remove('selected'));
+            pill.classList.add('selected');
+            const val = pill.dataset.bath;
+            this.preferences.bathrooms = (val === 'Flexible') ? null : parseInt(val);
+            this.updateProfileTags();
+            setTimeout(() => this.nextStep(), 250);
+          };
+        });
+      }
+
+      // Step 9: Amenities & Key Features
+      renderStep9(container) {
+        const availableFeatures = [
+          'Swimming Pool', 'Private Garden', 'Smart Home Automation',
+          'Elevator', 'Sea View', 'Margalla View', 'Rooftop Terrace',
+          'Solar Power', 'Home Cinema', 'Gated Security', 'Concierge Service'
+        ];
+
+        container.innerHTML = `
+          <div class="question-stage">
+            <h2 class="question-title">Select desired amenities & features</h2>
+            <p class="question-subtitle">Select any high-priority features. Our matching engine weighs each selected parameter.</p>
+            <div class="grid-2 gap-sm" style="max-width:600px;">
+              ${availableFeatures.map(f => {
+                const checked = this.preferences.features?.includes(f);
+                return `
+                  <label class="feature-checkbox-label">
+                    <input type="checkbox" value="${f}" ${checked ? 'checked' : ''} class="feature-cb">
+                    <span>${f}</span>
+                  </label>
+                `;
+              }).join('')}
+            </div>
+          </div>
+        `;
+
+        container.querySelectorAll('.feature-cb').forEach(cb => {
+          cb.onchange = () => {
+            const selected = Array.from(container.querySelectorAll('.feature-cb:checked')).map(c => c.value);
+            this.preferences.features = selected;
+            this.updateProfileTags();
+          };
+        });
+      }
+
+      nextStep() {
+        if (this.step < this.totalSteps) {
+          this.step++;
+          this.renderStep();
+        } else {
+          this.completeQuestionnaire();
+        }
+      }
+
+      prevStep() {
+        if (this.step > 1) {
+          this.step--;
+          this.renderStep();
+        }
+      }
+
+      skipStep() {
+        this.nextStep();
+      }
+
+      updateProfileTags() {
+        const container = document.getElementById('live-profile-tags');
+        const p = this.preferences;
+        const tags = [];
+
+        if (p.intent) tags.push({ label: `Intent: ${p.intent}`, step: 1 });
+        if (p.purpose) tags.push({ label: `Purpose: ${p.purpose}`, step: 2 });
+        if (p.property_type) tags.push({ label: `Type: ${p.property_type}`, step: 3 });
+        if (p.country) tags.push({ label: `Country: ${p.country}`, step: 4 });
+        if (p.city) tags.push({ label: `City: ${p.city}`, step: 5 });
+        if (p.area) tags.push({ label: `Area: ${p.area}`, step: 5 });
+        if (p.max_budget) tags.push({ label: `Max: ${formatPrice(p.max_budget, p.currency, true)}`, step: 6 });
+        if (p.bedrooms !== null && p.bedrooms !== undefined) tags.push({ label: `${p.bedrooms} Beds`, step: 7 });
+        if (p.bathrooms !== null && p.bathrooms !== undefined) tags.push({ label: `${p.bathrooms} Baths`, step: 8 });
+        if (p.features && p.features.length > 0) tags.push({ label: `${p.features.length} Features`, step: 9 });
+
+        container.innerHTML = tags.map(t => `
+          <button type="button" class="profile-pill jump-step-btn" data-step="${t.step}">
+            <span>${t.label}</span> ✏️
+          </button>
+        `).join('');
+
+        container.querySelectorAll('.jump-step-btn').forEach(btn => {
+          btn.onclick = () => {
+            this.step = parseInt(btn.dataset.step);
+            this.renderStep();
+          };
+        });
+
+        // Store state locally
+        localStorage.setItem('user_property_prefs', JSON.stringify(this.preferences));
+      }
+
+      resetProfile() {
+        localStorage.removeItem('user_property_prefs');
+        this.preferences = {
+          intent: 'buy',
+          purpose: 'personal',
+          property_type: 'villa',
+          country: 'Pakistan',
+          city: 'Karachi',
+          currency: 'PKR',
+          max_budget: 150000000,
+          bedrooms: 4,
+          bathrooms: 4,
+          features: []
+        };
+        this.step = 1;
+        this.renderStep();
+        this.updateProfileTags();
+        showToast('Questionnaire reset to defaults.', 'info');
+      }
+
+      handleChatMessage() {
+        const input = document.getElementById('chat-user-msg');
+        const text = input.value.trim();
+        if (!text) return;
+
+        const chatBox = document.getElementById('chat-messages');
+        
+        // Add User Bubble
+        const userBubble = document.createElement('div');
+        userBubble.className = 'ai-bubble ai-bubble--user';
+        userBubble.textContent = text;
+        chatBox.appendChild(userBubble);
+        input.value = '';
+        chatBox.scrollTop = chatBox.scrollHeight;
+
+        // Bot Response
+        setTimeout(async () => {
+          let reply = "I've noted that preference! Let's continue tailoring your search criteria.";
+          try {
+            const res = await api.ai.chat([{ role: 'user', content: text }], { preferences: this.preferences });
+            if (res && res.message) reply = res.message;
+          } catch(e) {
+            // Intelligent heuristic fallback
+            if (/karachi|lahore|islamabad|dubai|london/i.test(text)) {
+              const match = text.match(/karachi|lahore|islamabad|dubai|london/i);
+              this.preferences.city = match[0].charAt(0).toUpperCase() + match[0].slice(1).toLowerCase();
+              reply = `I updated your city to ${this.preferences.city}.`;
+              this.updateProfileTags();
+            } else if (/budget|price|million|lac|k/i.test(text)) {
+              reply = `I will adjust the budget filters to match ${text}.`;
+            } else {
+              reply = `Understood! I'll weigh "${text}" when ranking properties for you.`;
+            }
+          }
+
+          const botBubble = document.createElement('div');
+          botBubble.className = 'ai-bubble ai-bubble--bot';
+          botBubble.textContent = reply;
+          chatBox.appendChild(botBubble);
+          chatBox.scrollTop = chatBox.scrollHeight;
+        }, 500);
+      }
+
+      handleNLInput(text) {
+        showToast('Parsing your input with AI heuristics...', 'info');
+        if (/rent/i.test(text)) this.preferences.intent = 'rent';
+        if (/buy|sale/i.test(text)) this.preferences.intent = 'buy';
+        if (/karachi/i.test(text)) this.preferences.city = 'Karachi';
+        if (/lahore/i.test(text)) this.preferences.city = 'Lahore';
+        if (/islamabad/i.test(text)) this.preferences.city = 'Islamabad';
+        if (/dubai/i.test(text)) { this.preferences.city = 'Dubai'; this.preferences.country = 'UAE'; this.preferences.currency = 'AED'; }
+        if (/london/i.test(text)) { this.preferences.city = 'London'; this.preferences.country = 'UK'; this.preferences.currency = 'GBP'; }
+        if (/villa/i.test(text)) this.preferences.property_type = 'villa';
+        if (/apartment|flat|penthouse/i.test(text)) this.preferences.property_type = 'apartment';
+        if (/house|bungalow/i.test(text)) this.preferences.property_type = 'house';
+        
+        const bedMatch = text.match(/(\d+)\s*(?:bed|bedroom)/i);
+        if (bedMatch) this.preferences.bedrooms = parseInt(bedMatch[1]);
+
+        this.updateProfileTags();
+        this.renderStep();
+        showToast('Preferences updated from description!', 'success');
+      }
+
+      async completeQuestionnaire() {
+        const container = document.getElementById('question-container');
+        container.innerHTML = `
+          <div class="question-stage text-center" style="padding:3rem 1rem;">
+            <div style="font-size:3.5rem; margin-bottom:1rem; animation:pulse 1.5s infinite;">🤖</div>
+            <h2>Running AI Matching Algorithm...</h2>
+            <p style="color:var(--text-muted); margin-bottom:2rem;">Calculating transparent score breakdowns across 60+ prime listings.</p>
+            <div class="skeleton" style="height:8px; max-width:320px; margin:0 auto; border-radius:4px;"></div>
+          </div>
+        `;
+
+        try {
+          // Attempt API search run
+          try {
+            await api.search.run(this.preferences);
+          } catch(e) {
+            console.warn('Backend search API running in offline/demo mode.', e);
+          }
+        } catch(e) {}
+
+        setTimeout(() => {
+          window.location.href = `properties.html?city=${encodeURIComponent(this.preferences.city)}&type=${encodeURIComponent(this.preferences.property_type)}&listing=${encodeURIComponent(this.preferences.intent === 'rent' ? 'rent' : 'sale')}`;
+        }, 1200);
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      new PropertyAdvisor();
+    });
+  </script>
+</body>
+</html>

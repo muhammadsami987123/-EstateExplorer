@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Locations & Territories — AI Real Estate Explorer</title>
+  <meta name="description" content="Explore regional real estate hubs, urban zones, and investment micro-markets across Pakistan, UAE, and the United Kingdom.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌍</text></svg>">
+</head>
+<body>
+
+  <!-- Sticky Navigation -->
+  <header class="nav">
+    <div class="container nav-inner">
+      <a href="index.html" class="nav-logo">
+        <div class="nav-logo-icon">AI</div>
+        <span>Estate<span class="accent">Explorer</span></span>
+      </a>
+
+      <nav>
+        <ul class="nav-links">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="explore.html">Explore</a></li>
+          <li><a href="properties.html">Properties</a></li>
+          <li><a href="advisor.html">AI Advisor</a></li>
+          <li><a href="market.html">Market Insights</a></li>
+          <li><a href="reports.html">Reports</a></li>
+          <li><a href="saved.html">Saved</a></li>
+        </ul>
+      </nav>
+
+      <div class="nav-actions">
+        <button type="button" class="theme-toggle" aria-label="Toggle Theme">🌙</button>
+        <a href="advisor.html" class="btn btn-gold btn-sm">Start Exploring</a>
+        <button type="button" class="nav-mobile-toggle" aria-label="Toggle Navigation Menu">☰</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="section">
+    <div class="container">
+      
+      <!-- Page Header -->
+      <div class="section-header text-center">
+        <span class="section-eyebrow">Geographic Horizons</span>
+        <h1>Explore Territories & Markets</h1>
+        <p class="section-subtitle">Select a country to explore urban centers, sub-markets, and active inventory.</p>
+      </div>
+
+      <!-- Country Cards Row -->
+      <div class="grid-3 mb-lg">
+        <div class="card card-hover text-center country-selector-card active" data-country="Pakistan" style="cursor:pointer; border-width:2px;">
+          <div style="font-size:3rem; margin-bottom:0.5rem;">🇵🇰</div>
+          <h3>Pakistan</h3>
+          <p style="font-size:0.875rem; color:var(--text-muted);">Karachi &bull; Lahore &bull; Islamabad</p>
+          <span class="badge badge-sale mt-sm">35+ Listed Assets</span>
+        </div>
+
+        <div class="card card-hover text-center country-selector-card" data-country="UAE" style="cursor:pointer; border-width:2px;">
+          <div style="font-size:3rem; margin-bottom:0.5rem;">🇦🇪</div>
+          <h3>United Arab Emirates</h3>
+          <p style="font-size:0.875rem; color:var(--text-muted);">Dubai &bull; Abu Dhabi</p>
+          <span class="badge badge-sale mt-sm">18+ Listed Assets</span>
+        </div>
+
+        <div class="card card-hover text-center country-selector-card" data-country="UK" style="cursor:pointer; border-width:2px;">
+          <div style="font-size:3rem; margin-bottom:0.5rem;">🇬🇧</div>
+          <h3>United Kingdom</h3>
+          <p style="font-size:0.875rem; color:var(--text-muted);">London &bull; Manchester</p>
+          <span class="badge badge-sale mt-sm">12+ Listed Assets</span>
+        </div>
+      </div>
+
+      <!-- Regional Hubs Title -->
+      <div class="flex-between items-center mb-md">
+        <div>
+          <span class="section-eyebrow">Urban Subdivisions</span>
+          <h3 id="territory-headline">Metropolitan Hubs in Pakistan</h3>
+        </div>
+        <a href="properties.html" class="btn btn-secondary btn-sm" id="view-all-territory-btn">View All Listings ➔</a>
+      </div>
+
+      <!-- City Cards Container -->
+      <div class="grid-3 mb-lg" id="cities-grid">
+        <!-- Rendered by JS -->
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Global Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="index.html" class="nav-logo" style="margin-bottom: 1rem;">
+            <div class="nav-logo-icon">AI</div>
+            <span>Estate<span class="accent">Explorer</span></span>
+          </a>
+          <p>Production-grade AI real estate discovery and market intelligence platform.</p>
+        </div>
+        <div>
+          <h4 class="footer-heading">Platform</h4>
+          <ul class="footer-links">
+            <li><a href="advisor.html">AI Questionnaire</a></li>
+            <li><a href="properties.html">Catalog</a></li>
+            <li><a href="market.html">Market Insights</a></li>
+            <li><a href="reports.html">Reports</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="footer-heading">Locations</h4>
+          <ul class="footer-links">
+            <li><a href="properties.html?city=Karachi">Karachi</a></li>
+            <li><a href="properties.html?city=Lahore">Lahore</a></li>
+            <li><a href="properties.html?city=Dubai">Dubai</a></li>
+            <li><a href="properties.html?city=London">London</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="footer-heading">Legal</h4>
+          <ul class="footer-links">
+            <li><a href="privacy.html">Privacy</a></li>
+            <li><a href="terms.html">Terms [Demo]</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <div>&copy; 2024 AI Real Estate Explorer. All data presented is for demonstration purposes [Demo Dataset].</div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Script Logic -->
+  <script type="module">
+    import { mockLocations } from './js/mock_data.js';
+
+    const territoryData = {
+      'Pakistan': [
+        { name: 'Karachi', tag: 'Sindh Province', count: 20, avg: 'PKR 65.4M', yieldVal: '7.6%', desc: 'Seaside metropolis with premier enclaves: DHA Phase 8, Clifton Beach, and Emaar Oceanfront.' },
+        { name: 'Lahore', tag: 'Punjab Province', count: 10, avg: 'PKR 54.8M', yieldVal: '6.9%', desc: 'Cultural heartbeat featuring sprawling kanal estates in Gulberg III, Model Town, and DHA.' },
+        { name: 'Islamabad', tag: 'Capital Territory', count: 5, avg: 'PKR 86.2M', yieldVal: '5.8%', desc: 'Scenic mountain foothills with diplomat residences across Sectors F-6, F-7, and E-7.' }
+      ],
+      'UAE': [
+        { name: 'Dubai', tag: 'Emirate of Dubai', count: 18, avg: 'AED 3.85M', yieldVal: '8.4%', desc: 'Global destination for luxury sky-villas, Burj Khalifa penthouses, and Palm Jumeirah mansions.' },
+        { name: 'Abu Dhabi', tag: 'Capital Emirate', count: 6, avg: 'AED 4.20M', yieldVal: '7.2%', desc: 'Refined waterfront living across Saadiyat Cultural District and Yas Island waterfront.' }
+      ],
+      'UK': [
+        { name: 'London', tag: 'Greater London', count: 12, avg: 'GBP 1.95M', yieldVal: '4.2%', desc: 'Heritage townhouses and duplex penthouses in Kensington, Chelsea, and Belgravia.' },
+        { name: 'Manchester', tag: 'North West', count: 4, avg: 'GBP 450K', yieldVal: '6.8%', desc: 'High yielding media and tech corridor residential conversions.' }
+      ]
+    };
+
+    function renderTerritory(country) {
+      document.getElementById('territory-headline').textContent = `Metropolitan Hubs in ${country}`;
+      const cities = territoryData[country] || territoryData['Pakistan'];
+      const grid = document.getElementById('cities-grid');
+
+      grid.innerHTML = cities.map(c => `
+        <div class="card card-hover">
+          <div class="flex-between items-start mb-sm">
+            <div>
+              <span class="tag" style="font-size:0.75rem; margin-bottom:0.35rem;">${c.tag}</span>
+              <h3>${c.name}</h3>
+            </div>
+            <span class="badge badge-sale">${c.count} Listings</span>
+          </div>
+          <p style="font-size:0.875rem; color:var(--text-secondary); margin-bottom:1.25rem; line-height:1.6;">
+            ${c.desc}
+          </p>
+          <div style="border-top:1px solid var(--border); padding-top:0.75rem; display:flex; justify-content:space-between; font-size:0.85rem; margin-bottom:1rem;">
+            <div>
+              <span style="color:var(--text-muted); display:block; font-size:0.75rem;">Avg Price</span>
+              <strong>${c.avg}</strong>
+            </div>
+            <div>
+              <span style="color:var(--text-muted); display:block; font-size:0.75rem;">Gross Yield</span>
+              <strong style="color:var(--success);">${c.yieldVal}</strong>
+            </div>
+          </div>
+          <a href="properties.html?city=${encodeURIComponent(c.name)}" class="btn btn-sm btn-primary" style="width:100%;">
+            Explore ${c.name} Listings ➔
+          </a>
+        </div>
+      `).join('');
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      renderTerritory('Pakistan');
+
+      document.querySelectorAll('.country-selector-card').forEach(card => {
+        card.addEventListener('click', () => {
+          document.querySelectorAll('.country-selector-card').forEach(c => {
+            c.classList.remove('active');
+            c.style.borderColor = 'var(--border)';
+          });
+          card.classList.add('active');
+          card.style.borderColor = 'var(--accent)';
+          renderTerritory(card.dataset.country);
+        });
+      });
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Frequently Asked Questions — AI Real Estate Explorer</title>
+  <meta name="description" content="Answers to common questions regarding AI matching algorithms, data accuracy, supported territories, and reporting features.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💡</text></svg>">
+</head>
+<body>
+
+  <!-- Sticky Navigation -->
+  <header class="nav">
+    <div class="container nav-inner">
+      <a href="index.html" class="nav-logo">
+        <div class="nav-logo-icon">AI</div>
+        <span>Estate<span class="accent">Explorer</span></span>
+      </a>
+
+      <nav>
+        <ul class="nav-links">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="explore.html">Explore</a></li>
+          <li><a href="properties.html">Properties</a></li>
+          <li><a href="advisor.html">AI Advisor</a></li>
+          <li><a href="market.html">Market Insights</a></li>
+          <li><a href="reports.html">Reports</a></li>
+          <li><a href="saved.html">Saved</a></li>
+        </ul>
+      </nav>
+
+      <div class="nav-actions">
+        <button type="button" class="theme-toggle" aria-label="Toggle Theme">🌙</button>
+        <a href="advisor.html" class="btn btn-gold btn-sm">Start Exploring</a>
+        <button type="button" class="nav-mobile-toggle" aria-label="Toggle Navigation Menu">☰</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="section">
+    <div class="container" style="max-width: 860px;">
+      
+      <!-- Page Header -->
+      <div class="section-header text-center">
+        <span class="section-eyebrow">Knowledge Base & FAQ</span>
+        <h1>Frequently Asked Questions</h1>
+        <p class="section-subtitle">
+          Everything you need to know about our matching engine, market data, and platform mechanics.
+        </p>
+      </div>
+
+      <!-- Accordion FAQ Component -->
+      <div class="accordion" id="faq-accordion">
+        
+        <div class="accordion-item active">
+          <button type="button" class="accordion-trigger">
+            <span>How does the AI matching algorithm calculate property scores?</span>
+            <span class="accordion-icon">▼</span>
+          </button>
+          <div class="accordion-content">
+            Our matching engine evaluates 5 core dimensions: Location Proximity (30%), Budget Proximity (25%), Room & Area Capacity (20%), Specific Amenities (15%), and Investment Yield Alignment (10%). Rather than arbitrary AI guesses, each score is mathematically weighted and transparently presented with full breakdowns.
+          </div>
+        </div>
+
+        <div class="accordion-item">
+          <button type="button" class="accordion-trigger">
+            <span>Is the property and market data real or simulated?</span>
+            <span class="accordion-icon">▼</span>
+          </button>
+          <div class="accordion-content">
+            All property records, prices, appreciation curves, and market statistics currently shown are part of a curated <strong>[Demo Dataset]</strong>. They reflect realistic market benchmarks for Karachi, Lahore, Islamabad, Dubai, and London, but should not be taken as live verified legal deeds or active commercial brokerage agreements.
+          </div>
+        </div>
+
+        <div class="accordion-item">
+          <button type="button" class="accordion-trigger">
+            <span>Can I search in conversational natural language?</span>
+            <span class="accordion-icon">▼</span>
+          </button>
+          <div class="accordion-content">
+            Yes! You can type queries such as <em>"I need a 4 bedroom villa in DHA Phase 8 Karachi under 180M with swimming pool"</em> directly into the Explore page or Advisor sidebar. The system extracts the parameters and automatically filters the properties catalog.
+          </div>
+        </div>
+
+        <div class="accordion-item">
+          <button type="button" class="accordion-trigger">
+            <span>How do side-by-side comparisons work?</span>
+            <span class="accordion-icon">▼</span>
+          </button>
+          <div class="accordion-content">
+            You can select up to 3 properties across any page by clicking the scale icon (⚖️). Navigating to the Compare page will generate a side-by-side feature matrix highlighting lowest prices in green, largest square footage, amenity checklists, and an automated AI comparative synthesis.
+          </div>
+        </div>
+
+        <div class="accordion-item">
+          <button type="button" class="accordion-trigger">
+            <span>Can I export investment reports for co-investors or family?</span>
+            <span class="accordion-icon">▼</span>
+          </button>
+          <div class="accordion-content">
+            Yes. The Reports section dynamically compiles an acquisition briefing package complete with macro market statistics, capital outlay projections (stamp duties, conveyancing, legal fees), and an acquisition checklist. You can export these reports in PDF, Markdown, or JSON.
+          </div>
+        </div>
+
+        <div class="accordion-item">
+          <button type="button" class="accordion-trigger">
+            <span>What technology stack powers this application?</span>
+            <span class="accordion-icon">▼</span>
+          </button>
+          <div class="accordion-content">
+            The platform is built with a high-performance Python 3.11 + FastAPI backend using a zero-ORM thread-safe JSON database engine, and a native Vanilla JavaScript ES2024 frontend with custom CSS design tokens, MapLibre GL JS maps, and Chart.js visualizations.
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Global Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-bottom" style="border:none; padding-top:0;">
+        <div>&copy; 2024 AI Real Estate Explorer. All data presented is for demonstration purposes [Demo Dataset].</div>
+      </div>
+    </div>
+  </footer>
+
+  <script type="module">
+    document.addEventListener('DOMContentLoaded', () => {
+      const items = document.querySelectorAll('.accordion-item');
+      items.forEach(item => {
+        const trigger = item.querySelector('.accordion-trigger');
+        trigger.addEventListener('click', () => {
+          const isActive = item.classList.contains('active');
+          items.forEach(i => i.classList.remove('active'));
+          if (!isActive) item.classList.add('active');
+        });
+      });
+    });
+  </script>
+</body>
+</html>

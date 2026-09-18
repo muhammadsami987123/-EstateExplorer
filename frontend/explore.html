@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Explore Properties — Natural Language Search & Discovery</title>
+  <meta name="description" content="Discover properties using natural language or browse by category, city, and listing type across premier real estate hubs.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔍</text></svg>">
+</head>
+<body>
+
+  <!-- Sticky Navigation -->
+  <header class="nav">
+    <div class="container nav-inner">
+      <a href="index.html" class="nav-logo">
+        <div class="nav-logo-icon">AI</div>
+        <span>Estate<span class="accent">Explorer</span></span>
+      </a>
+
+      <nav>
+        <ul class="nav-links">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="explore.html" class="active">Explore</a></li>
+          <li><a href="properties.html">Properties</a></li>
+          <li><a href="advisor.html">AI Advisor</a></li>
+          <li><a href="market.html">Market Insights</a></li>
+          <li><a href="reports.html">Reports</a></li>
+          <li><a href="saved.html">Saved</a></li>
+        </ul>
+      </nav>
+
+      <div class="nav-actions">
+        <button type="button" class="theme-toggle" aria-label="Toggle Theme">🌙</button>
+        <a href="advisor.html" class="btn btn-gold btn-sm">Start Exploring</a>
+        <button type="button" class="nav-mobile-toggle" aria-label="Toggle Navigation Menu">☰</button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- Natural Language Hero Search -->
+    <section class="section-sm" style="background: radial-gradient(circle at 50% 0%, rgba(201, 169, 110, 0.1) 0%, transparent 70%), var(--bg); border-bottom: 1px solid var(--border);">
+      <div class="container" style="max-width: 900px; text-align: center;">
+        <span class="section-eyebrow">Conversational Semantic Search</span>
+        <h1 style="margin-bottom: 1rem;">What Are You Looking For?</h1>
+        <p class="text-secondary" style="margin-bottom: 2rem;">
+          Describe your ideal property in natural language. Our AI parser extracts parameters such as budget, location, bedrooms, and amenities automatically.
+        </p>
+
+        <!-- NL Search Box -->
+        <div class="card" style="padding: 1.5rem; text-align: left; box-shadow: var(--shadow-md);">
+          <div class="form-group" style="margin-bottom: 1rem;">
+            <label for="nl-search-input" class="form-label" style="font-weight: 600; display: flex; align-items: center; gap: 0.5rem;">
+              <span>🤖 AI Search Assistant</span>
+            </label>
+            <textarea id="nl-search-input" class="textarea" rows="3" placeholder="e.g. I need a 4 bedroom villa in Karachi DHA Phase 8 with private garden and pool, budget around 180M PKR..."></textarea>
+          </div>
+          
+          <div class="flex-between items-center flex-wrap" style="gap: 1rem;">
+            <div style="font-size: 0.85rem; color: var(--text-muted);">
+              Try: <span class="text-gold" style="cursor: pointer; text-decoration: underline;" id="example-query-1">"Penthouse in Dubai with sea view"</span> or <span class="text-gold" style="cursor: pointer; text-decoration: underline;" id="example-query-2">"5 bed house in Lahore under 150M"</span>
+            </div>
+            <button type="button" id="extract-search-btn" class="btn btn-gold">
+              <span>Extract & Explore</span> ➔
+            </button>
+          </div>
+        </div>
+
+        <!-- Quick Filter Pills -->
+        <div class="flex-center flex-wrap gap-sm mt-md">
+          <button type="button" class="pill-btn selected filter-listing" data-listing="all">All Listings</button>
+          <button type="button" class="pill-btn filter-listing" data-listing="sale">For Sale</button>
+          <button type="button" class="pill-btn filter-listing" data-listing="rent">For Rent</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Property Type Grid -->
+    <section class="section-sm">
+      <div class="container">
+        <div class="section-header text-center">
+          <span class="section-eyebrow">Categorized Discovery</span>
+          <h3>Browse by Property Type</h3>
+        </div>
+
+        <div class="grid-6 grid-3" style="grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));">
+          <a href="properties.html?type=house" class="card card-hover text-center" style="padding:1.25rem 1rem;">
+            <div style="font-size:2rem; margin-bottom:0.5rem;">🏡</div>
+            <div style="font-weight:600; font-size:0.95rem;">House</div>
+            <div style="font-size:0.75rem; color:var(--text-muted);">Standalone</div>
+          </a>
+          <a href="properties.html?type=apartment" class="card card-hover text-center" style="padding:1.25rem 1rem;">
+            <div style="font-size:2rem; margin-bottom:0.5rem;">🏢</div>
+            <div style="font-weight:600; font-size:0.95rem;">Apartment</div>
+            <div style="font-size:0.75rem; color:var(--text-muted);">Flats & Duplex</div>
+          </a>
+          <a href="properties.html?type=villa" class="card card-hover text-center" style="padding:1.25rem 1rem;">
+            <div style="font-size:2rem; margin-bottom:0.5rem;">🏰</div>
+            <div style="font-weight:600; font-size:0.95rem;">Villa</div>
+            <div style="font-size:0.75rem; color:var(--text-muted);">Luxury Estates</div>
+          </a>
+          <a href="properties.html?type=plot" class="card card-hover text-center" style="padding:1.25rem 1rem;">
+            <div style="font-size:2rem; margin-bottom:0.5rem;">📐</div>
+            <div style="font-weight:600; font-size:0.95rem;">Plot</div>
+            <div style="font-size:0.75rem; color:var(--text-muted);">Development Land</div>
+          </a>
+          <a href="properties.html?type=office" class="card card-hover text-center" style="padding:1.25rem 1rem;">
+            <div style="font-size:2rem; margin-bottom:0.5rem;">💼</div>
+            <div style="font-weight:600; font-size:0.95rem;">Office</div>
+            <div style="font-size:0.75rem; color:var(--text-muted);">Commercial</div>
+          </a>
+          <a href="properties.html?type=shop" class="card card-hover text-center" style="padding:1.25rem 1rem;">
+            <div style="font-size:2rem; margin-bottom:0.5rem;">🛍️</div>
+            <div style="font-weight:600; font-size:0.95rem;">Shop</div>
+            <div style="font-size:0.75rem; color:var(--text-muted);">Retail Outlets</div>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Location Spotlight Cards -->
+    <section class="section-sm" style="background-color: var(--surface-2);">
+      <div class="container">
+        <div class="flex-between items-center section-header" style="margin-bottom:2rem;">
+          <div>
+            <span class="section-eyebrow">Geographic Markets</span>
+            <h3>Top Investment Cities</h3>
+          </div>
+          <a href="locations.html" class="btn btn-sm btn-secondary">View All Locations ➔</a>
+        </div>
+
+        <div class="grid-5">
+          <a href="properties.html?city=Karachi" class="card card-hover" style="text-decoration:none; padding:1.5rem;">
+            <span style="font-size:1.8rem;">🌊</span>
+            <h4 style="margin:0.5rem 0 0.25rem 0;">Karachi</h4>
+            <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:0.75rem;">Pakistan's Financial Capital</p>
+            <span class="badge badge-sale">20+ Listings</span>
+          </a>
+
+          <a href="properties.html?city=Lahore" class="card card-hover" style="text-decoration:none; padding:1.5rem;">
+            <span style="font-size:1.8rem;">🏰</span>
+            <h4 style="margin:0.5rem 0 0.25rem 0;">Lahore</h4>
+            <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:0.75rem;">Cultural & Heritage Hub</p>
+            <span class="badge badge-sale">10+ Listings</span>
+          </a>
+
+          <a href="properties.html?city=Islamabad" class="card card-hover" style="text-decoration:none; padding:1.5rem;">
+            <span style="font-size:1.8rem;">⛰️</span>
+            <h4 style="margin:0.5rem 0 0.25rem 0;">Islamabad</h4>
+            <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:0.75rem;">Capital Territory Luxury</p>
+            <span class="badge badge-sale">5+ Listings</span>
+          </a>
+
+          <a href="properties.html?city=Dubai" class="card card-hover" style="text-decoration:none; padding:1.5rem;">
+            <span style="font-size:1.8rem;">🏙️</span>
+            <h4 style="margin:0.5rem 0 0.25rem 0;">Dubai</h4>
+            <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:0.75rem;">Global Luxury Standard</p>
+            <span class="badge badge-sale">18+ Listings</span>
+          </a>
+
+          <a href="properties.html?city=London" class="card card-hover" style="text-decoration:none; padding:1.5rem;">
+            <span style="font-size:1.8rem;">👑</span>
+            <h4 style="margin:0.5rem 0 0.25rem 0;">London</h4>
+            <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:0.75rem;">Prime Central London</p>
+            <span class="badge badge-sale">12+ Listings</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Property Results Section -->
+    <section class="section">
+      <div class="container">
+        <div class="flex-between items-center section-header">
+          <div>
+            <span class="section-eyebrow">Inventory Catalog</span>
+            <h2>Available Properties</h2>
+          </div>
+          <div id="results-count" class="tag">Showing 6 Featured Results</div>
+        </div>
+
+        <div id="explore-grid" class="grid-3">
+          <div class="skeleton skeleton-card"></div>
+          <div class="skeleton skeleton-card"></div>
+          <div class="skeleton skeleton-card"></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Global Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="index.html" class="nav-logo" style="margin-bottom: 1rem;">
+            <div class="nav-logo-icon">AI</div>
+            <span>Estate<span class="accent">Explorer</span></span>
+          </a>
+          <p>Autonomous real estate discovery with AI parsing and multi-market intelligence.</p>
+        </div>
+        <div>
+          <h4 class="footer-heading">Navigation</h4>
+          <ul class="footer-links">
+            <li><a href="advisor.html">AI Advisor Questionnaire</a></li>
+            <li><a href="properties.html">Full Property Catalog</a></li>
+            <li><a href="market.html">Market Insights</a></li>
+            <li><a href="reports.html">Investment Reports</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="footer-heading">Locations</h4>
+          <ul class="footer-links">
+            <li><a href="properties.html?city=Karachi">Karachi</a></li>
+            <li><a href="properties.html?city=Lahore">Lahore</a></li>
+            <li><a href="properties.html?city=Islamabad">Islamabad</a></li>
+            <li><a href="properties.html?city=Dubai">Dubai</a></li>
+            <li><a href="properties.html?city=London">London</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="footer-heading">Information</h4>
+          <ul class="footer-links">
+            <li><a href="about.html">About Developer</a></li>
+            <li><a href="faq.html">FAQ</a></li>
+            <li><a href="privacy.html">Privacy Policy</a></li>
+            <li><a href="terms.html">Terms [Demo Dataset]</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <div>&copy; 2024 AI Real Estate Explorer. All property records are for demonstration purposes.</div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Script Logic -->
+  <script type="module">
+    import api from './js/api.js';
+    import { createPropertyCardHTML, attachCardEventListeners, showSkeletons, showToast } from './js/app.js';
+    import { mockProperties } from './js/mock_data.js';
+
+    let allProperties = [];
+    let currentFilter = 'all';
+
+    async function loadProperties() {
+      const container = document.getElementById('explore-grid');
+      showSkeletons(container, 6, 'card');
+
+      try {
+        const res = await api.properties.list();
+        if (res && res.length > 0) {
+          allProperties = res;
+        } else {
+          allProperties = mockProperties;
+        }
+      } catch (err) {
+        console.warn('API list failed, using mock data:', err);
+        allProperties = mockProperties;
+      }
+
+      renderFiltered();
+    }
+
+    function renderFiltered() {
+      const container = document.getElementById('explore-grid');
+      const countEl = document.getElementById('results-count');
+
+      let filtered = allProperties;
+      if (currentFilter !== 'all') {
+        filtered = allProperties.filter(p => p.listing_type === currentFilter);
+      }
+
+      countEl.textContent = `Showing ${filtered.length} Properties`;
+      if (filtered.length === 0) {
+        container.innerHTML = `
+          <div style="grid-column: 1 / -1; text-align: center; padding: 3rem;">
+            <p>No properties match the selected criteria.</p>
+            <a href="properties.html" class="btn btn-secondary">Clear Filter</a>
+          </div>
+        `;
+      } else {
+        container.innerHTML = filtered.map((prop, idx) => createPropertyCardHTML(prop, idx)).join('');
+        attachCardEventListeners(container);
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      loadProperties();
+
+      // Quick filter pills
+      document.querySelectorAll('.filter-listing').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.filter-listing').forEach(b => b.classList.remove('selected'));
+          btn.classList.add('selected');
+          currentFilter = btn.dataset.listing;
+          renderFiltered();
+        });
+      });
+
+      // Sample query clicks
+      document.getElementById('example-query-1')?.addEventListener('click', (e) => {
+        document.getElementById('nl-search-input').value = e.target.textContent.replace(/"/g, '');
+      });
+      document.getElementById('example-query-2')?.addEventListener('click', (e) => {
+        document.getElementById('nl-search-input').value = e.target.textContent.replace(/"/g, '');
+      });
+
+      // Extract button handler
+      const extractBtn = document.getElementById('extract-search-btn');
+      extractBtn?.addEventListener('click', async () => {
+        const text = document.getElementById('nl-search-input').value.trim();
+        if (!text) {
+          showToast('Please type your requirements first.', 'warning');
+          return;
+        }
+
+        extractBtn.disabled = true;
+        extractBtn.innerHTML = '<span>Processing with AI...</span>';
+
+        try {
+          // Attempt AI extraction
+          let extracted = null;
+          try {
+            const res = await api.ai.extract(text);
+            if (res) extracted = res;
+          } catch (e) {
+            console.warn('AI extraction endpoint not ready or key missing. Parsing locally.', e);
+          }
+
+          // Fallback parser if API isn't active
+          if (!extracted) {
+            extracted = { query: text };
+            if (/rent/i.test(text)) extracted.listing_type = 'rent';
+            if (/buy|sale/i.test(text)) extracted.listing_type = 'sale';
+            if (/karachi/i.test(text)) extracted.city = 'Karachi';
+            if (/lahore/i.test(text)) extracted.city = 'Lahore';
+            if (/islamabad/i.test(text)) extracted.city = 'Islamabad';
+            if (/dubai/i.test(text)) extracted.city = 'Dubai';
+            if (/london/i.test(text)) extracted.city = 'London';
+            if (/villa/i.test(text)) extracted.property_type = 'villa';
+            if (/apartment|flat|penthouse/i.test(text)) extracted.property_type = 'apartment';
+            if (/house|bungalow/i.test(text)) extracted.property_type = 'house';
+          }
+
+          localStorage.setItem('extracted_search', JSON.stringify(extracted));
+          showToast('AI analysis complete! Redirecting to Advisor...', 'success');
+          setTimeout(() => {
+            window.location.href = `advisor.html?nl=${encodeURIComponent(text)}`;
+          }, 600);
+        } catch (err) {
+          console.error(err);
+          showToast('Error parsing query, redirecting to search...', 'error');
+          window.location.href = `properties.html?q=${encodeURIComponent(text)}`;
+        } finally {
+          extractBtn.disabled = false;
+          extractBtn.innerHTML = '<span>Extract & Explore</span> ➔';
+        }
+      });
+    });
+  </script>
+</body>
+</html>

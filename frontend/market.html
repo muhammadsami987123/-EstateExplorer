@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Market Intelligence & Price Trends — AI Real Estate Explorer</title>
+  <meta name="description" content="Macro and micro real estate analytics, historical capital appreciation curves, price per square foot comparisons, and AI market commentary. [Demo Dataset]">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/main.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📊</text></svg>">
+</head>
+<body>
+
+  <!-- Sticky Navigation -->
+  <header class="nav">
+    <div class="container nav-inner">
+      <a href="index.html" class="nav-logo">
+        <div class="nav-logo-icon">AI</div>
+        <span>Estate<span class="accent">Explorer</span></span>
+      </a>
+
+      <nav>
+        <ul class="nav-links">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="explore.html">Explore</a></li>
+          <li><a href="properties.html">Properties</a></li>
+          <li><a href="advisor.html">AI Advisor</a></li>
+          <li><a href="market.html" class="active">Market Insights</a></li>
+          <li><a href="reports.html">Reports</a></li>
+          <li><a href="saved.html">Saved</a></li>
+        </ul>
+      </nav>
+
+      <div class="nav-actions">
+        <button type="button" class="theme-toggle" aria-label="Toggle Theme">🌙</button>
+        <a href="advisor.html" class="btn btn-gold btn-sm">Start Exploring</a>
+        <button type="button" class="nav-mobile-toggle" aria-label="Toggle Navigation Menu">☰</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="section">
+    <div class="container">
+      
+      <!-- Page Header with Disclaimer -->
+      <div class="flex-between items-center flex-wrap gap-md mb-md">
+        <div>
+          <div class="flex items-center gap-xs">
+            <span class="section-eyebrow">Macro Intelligence</span>
+            <span class="badge badge-sale">[Demo Dataset]</span>
+          </div>
+          <h1>Real Estate Market Intelligence</h1>
+          <p class="text-secondary">Historical valuation trends, price-per-square-foot benchmarks, and predictive regional metrics.</p>
+        </div>
+
+        <div class="flex items-center gap-sm">
+          <label for="market-location-select" class="form-label" style="margin-bottom:0;">Select Market:</label>
+          <select id="market-location-select" class="select" style="width:220px;">
+            <option value="Karachi">Karachi, Pakistan</option>
+            <option value="Lahore">Lahore, Pakistan</option>
+            <option value="Islamabad">Islamabad, Pakistan</option>
+            <option value="Dubai">Dubai, UAE</option>
+            <option value="London">London, UK</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Key Stat Cards -->
+      <div class="grid-4 mb-lg">
+        <div class="card card-hover">
+          <span class="section-eyebrow">Average Valuation [Demo]</span>
+          <div style="font-family:var(--font-serif); font-size:2rem; font-weight:700; color:var(--text-primary); margin:0.3rem 0;" id="stat-avg-price">
+            PKR 65.4M
+          </div>
+          <p style="font-size:0.8rem; color:var(--success); font-weight:600;" id="stat-price-growth">
+            ▲ +8.4% Year-over-Year
+          </p>
+        </div>
+
+        <div class="card card-hover">
+          <span class="section-eyebrow">Price / Sq Ft [Demo]</span>
+          <div style="font-family:var(--font-serif); font-size:2rem; font-weight:700; color:var(--accent); margin:0.3rem 0;" id="stat-price-sqft">
+            PKR 14,200
+          </div>
+          <p style="font-size:0.8rem; color:var(--text-muted);">
+            Based on completed settlements
+          </p>
+        </div>
+
+        <div class="card card-hover">
+          <span class="section-eyebrow">Average Net Yield [Demo]</span>
+          <div style="font-family:var(--font-serif); font-size:2rem; font-weight:700; color:var(--success); margin:0.3rem 0;" id="stat-avg-yield">
+            7.6%
+          </div>
+          <p style="font-size:0.8rem; color:var(--text-muted);">
+            Annual rental gross vs valuation
+          </p>
+        </div>
+
+        <div class="card card-hover">
+          <span class="section-eyebrow">Active Inventory [Demo]</span>
+          <div style="font-family:var(--font-serif); font-size:2rem; font-weight:700; color:var(--text-primary); margin:0.3rem 0;" id="stat-inventory">
+            20+ Listings
+          </div>
+          <p style="font-size:0.8rem; color:var(--text-muted);">
+            Monitored in this submarket
+          </p>
+        </div>
+      </div>
+
+      <!-- Charts Section (Grid: 2fr 1fr) -->
+      <div class="grid-3 mb-lg" style="grid-template-columns: 2fr 1fr;">
+        <!-- Line Chart (Price Trends) -->
+        <div class="card" style="padding:1.75rem;">
+          <div class="flex-between items-center mb-md">
+            <div>
+              <h4 style="margin-bottom:0.25rem;">Capital Appreciation Trajectory [Demo Dataset]</h4>
+              <p style="font-size:0.825rem; color:var(--text-muted); margin-bottom:0;">5-Year indexed price progression per sq ft</p>
+            </div>
+            <span class="tag">Historical (2020 - 2024)</span>
+          </div>
+          <div style="position:relative; height:320px;">
+            <canvas id="trendChart"></canvas>
+          </div>
+        </div>
+
+        <!-- Donut Chart (Property Distribution) -->
+        <div class="card" style="padding:1.75rem;">
+          <div class="mb-md">
+            <h4 style="margin-bottom:0.25rem;">Inventory Composition [Demo Dataset]</h4>
+            <p style="font-size:0.825rem; color:var(--text-muted); margin-bottom:0;">Breakdown by asset class</p>
+          </div>
+          <div style="position:relative; height:320px;">
+            <canvas id="distChart"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- AI Market Commentary -->
+      <div class="card card-gold mb-lg">
+        <div class="flex items-center gap-sm mb-sm">
+          <span style="font-size:1.6rem;">🤖</span>
+          <h3 style="margin-bottom:0;">AI Market Outlook & Heuristic Intelligence [Demo Dataset]</h3>
+        </div>
+        <p id="ai-market-text" style="font-size:0.95rem; line-height:1.75; color:var(--text-primary);">
+          Loading regional macroeconomic analysis and absorption rate metrics...
+        </p>
+      </div>
+
+      <!-- All Locations Comparison Table -->
+      <div class="card" style="padding:0; overflow:hidden;">
+        <div style="padding:1.5rem 1.75rem; border-bottom:1px solid var(--border);">
+          <h3 style="margin-bottom:0.25rem;">Global Market Matrix [Demo Dataset]</h3>
+          <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:0;">Compare benchmark returns and price points across all tracked regional markets.</p>
+        </div>
+        <div class="compare-table-wrap" style="border:none; border-radius:0;">
+          <table class="compare-table">
+            <thead>
+              <tr>
+                <th>Market / City</th>
+                <th>Territory</th>
+                <th>Average Price</th>
+                <th>Avg Price/SqFt</th>
+                <th>Rental Yield</th>
+                <th>Annual Trend</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Karachi</strong></td>
+                <td>Pakistan</td>
+                <td>PKR 65.4M</td>
+                <td>PKR 14,200</td>
+                <td><span style="color:var(--success); font-weight:600;">7.6%</span></td>
+                <td><span style="color:var(--success); font-weight:600;">▲ +8.4%</span></td>
+                <td><a href="properties.html?city=Karachi" class="btn btn-sm btn-ghost">View (20)</a></td>
+              </tr>
+              <tr>
+                <td><strong>Lahore</strong></td>
+                <td>Pakistan</td>
+                <td>PKR 54.8M</td>
+                <td>PKR 12,800</td>
+                <td><span style="color:var(--success); font-weight:600;">6.9%</span></td>
+                <td><span style="color:var(--success); font-weight:600;">▲ +6.8%</span></td>
+                <td><a href="properties.html?city=Lahore" class="btn btn-sm btn-ghost">View (10)</a></td>
+              </tr>
+              <tr>
+                <td><strong>Islamabad</strong></td>
+                <td>Pakistan</td>
+                <td>PKR 86.2M</td>
+                <td>PKR 17,500</td>
+                <td><span style="color:var(--success); font-weight:600;">5.8%</span></td>
+                <td><span style="color:var(--success); font-weight:600;">▲ +11.2%</span></td>
+                <td><a href="properties.html?city=Islamabad" class="btn btn-sm btn-ghost">View (5)</a></td>
+              </tr>
+              <tr>
+                <td><strong>Dubai</strong></td>
+                <td>UAE</td>
+                <td>AED 3.85M</td>
+                <td>AED 2,150</td>
+                <td><span style="color:var(--success); font-weight:600;">8.4%</span></td>
+                <td><span style="color:var(--success); font-weight:600;">▲ +14.5%</span></td>
+                <td><a href="properties.html?city=Dubai" class="btn btn-sm btn-ghost">View (18)</a></td>
+              </tr>
+              <tr>
+                <td><strong>London</strong></td>
+                <td>United Kingdom</td>
+                <td>GBP 1.95M</td>
+                <td>GBP 1,250</td>
+                <td><span style="color:var(--success); font-weight:600;">4.2%</span></td>
+                <td><span style="color:var(--success); font-weight:600;">▲ +3.2%</span></td>
+                <td><a href="properties.html?city=London" class="btn btn-sm btn-ghost">View (12)</a></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Global Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="index.html" class="nav-logo" style="margin-bottom: 1rem;">
+            <div class="nav-logo-icon">AI</div>
+            <span>Estate<span class="accent">Explorer</span></span>
+          </a>
+          <p>Autonomous real estate intelligence platform with transparent heuristic benchmarks.</p>
+        </div>
+        <div>
+          <h4 class="footer-heading">Platform</h4>
+          <ul class="footer-links">
+            <li><a href="advisor.html">AI Advisor Questionnaire</a></li>
+            <li><a href="properties.html">Catalog</a></li>
+            <li><a href="market.html">Market Insights</a></li>
+            <li><a href="reports.html">Reports</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="footer-heading">Hubs</h4>
+          <ul class="footer-links">
+            <li><a href="properties.html?city=Karachi">Karachi</a></li>
+            <li><a href="properties.html?city=Lahore">Lahore</a></li>
+            <li><a href="properties.html?city=Dubai">Dubai</a></li>
+            <li><a href="properties.html?city=London">London</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="footer-heading">Disclaimer</h4>
+          <ul class="footer-links">
+            <li><a href="privacy.html">Privacy</a></li>
+            <li><a href="terms.html">Terms of Service [Demo]</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <div>&copy; 2024 AI Real Estate Explorer. All market data displayed are strictly simulation and demonstration datasets [Demo Dataset].</div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Script Logic with Chart.js -->
+  <script type="module">
+    import api from './js/api.js';
+
+    const marketData = {
+      'Karachi': {
+        avgPrice: 'PKR 65.4M',
+        priceGrowth: '▲ +8.4% YoY',
+        priceSqft: 'PKR 14,200',
+        avgYield: '7.6%',
+        inventory: '20+ Active',
+        trendLabels: ['2020', '2021', '2022', '2023', '2024'],
+        trendData: [9800, 10600, 11900, 13100, 14200],
+        composition: [45, 30, 15, 10], // Houses, Apts, Plots, Commercial
+        aiInsight: "Karachi's prime coastal subdivisions (DHA Phase 8 and Clifton) continue to absorb overseas remittances and private wealth. High interest in beachfront properties and gated communities maintains resilient capital gains despite macroeconomic headwinds."
+      },
+      'Lahore': {
+        avgPrice: 'PKR 54.8M',
+        priceGrowth: '▲ +6.8% YoY',
+        priceSqft: 'PKR 12,800',
+        avgYield: '6.9%',
+        inventory: '10+ Active',
+        trendLabels: ['2020', '2021', '2022', '2023', '2024'],
+        trendData: [8900, 9700, 10800, 11900, 12800],
+        composition: [55, 20, 15, 10],
+        aiInsight: "Lahore exhibits strong demand in heritage central zones such as Gulberg and modernized expansions in DHA Phase 6-9. Land acquisition value remains elevated, backed by infrastructure interconnects."
+      },
+      'Islamabad': {
+        avgPrice: 'PKR 86.2M',
+        priceGrowth: '▲ +11.2% YoY',
+        priceSqft: 'PKR 17,500',
+        avgYield: '5.8%',
+        inventory: '5+ Active',
+        trendLabels: ['2020', '2021', '2022', '2023', '2024'],
+        trendData: [11200, 12600, 14100, 15800, 17500],
+        composition: [60, 25, 10, 5],
+        aiInsight: "Islamabad Sector F and E series properties retain the highest national price-per-square-foot baseline, supported by strict zoning regulations, foreign diplomatic leasing demand, and scenic Margalla topography."
+      },
+      'Dubai': {
+        avgPrice: 'AED 3.85M',
+        priceGrowth: '▲ +14.5% YoY',
+        priceSqft: 'AED 2,150',
+        avgYield: '8.4%',
+        inventory: '18+ Active',
+        trendLabels: ['2020', '2021', '2022', '2023', '2024'],
+        trendData: [1350, 1490, 1720, 1940, 2150],
+        composition: [25, 60, 5, 10],
+        aiInsight: "Dubai continues its historic upward rally powered by golden visa inflows and international investor repatriation. Prime areas like Downtown, Palm Jumeirah, and DIFC show top tier yields above 8%."
+      },
+      'London': {
+        avgPrice: 'GBP 1.95M',
+        priceGrowth: '▲ +3.2% YoY',
+        priceSqft: 'GBP 1,250',
+        avgYield: '4.2%',
+        inventory: '12+ Active',
+        trendLabels: ['2020', '2021', '2022', '2023', '2024'],
+        trendData: [1120, 1160, 1190, 1210, 1250],
+        composition: [35, 55, 0, 10],
+        aiInsight: "Prime Central London (Kensington, Chelsea, Mayfair) represents a classic safe-haven wealth preservation environment. Lower yields are offset by long-term currency stability and irreplaceable historic architectural supply."
+      }
+    };
+
+    let trendChart = null;
+    let distChart = null;
+
+    function renderCharts(cityName) {
+      const d = marketData[cityName] || marketData['Karachi'];
+
+      // Update stat cards
+      document.getElementById('stat-avg-price').textContent = d.avgPrice;
+      document.getElementById('stat-price-growth').textContent = d.priceGrowth;
+      document.getElementById('stat-price-sqft').textContent = d.priceSqft;
+      document.getElementById('stat-avg-yield').textContent = d.avgYield;
+      document.getElementById('stat-inventory').textContent = d.inventory;
+      document.getElementById('ai-market-text').textContent = d.aiInsight;
+
+      // Line Chart
+      const trendCtx = document.getElementById('trendChart').getContext('2d');
+      if (trendChart) trendChart.destroy();
+      trendChart = new Chart(trendCtx, {
+        type: 'line',
+        data: {
+          labels: d.trendLabels,
+          datasets: [{
+            label: 'Benchmark Rate Index',
+            data: d.trendData,
+            borderColor: '#C9A96E',
+            backgroundColor: 'rgba(201, 169, 110, 0.1)',
+            borderWidth: 3,
+            fill: true,
+            tension: 0.35,
+            pointBackgroundColor: '#8B6914',
+            pointRadius: 5
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false }
+          },
+          scales: {
+            y: { grid: { color: 'rgba(200, 200, 200, 0.15)' } },
+            x: { grid: { display: false } }
+          }
+        }
+      });
+
+      // Donut Chart
+      const distCtx = document.getElementById('distChart').getContext('2d');
+      if (distChart) distChart.destroy();
+      distChart = new Chart(distCtx, {
+        type: 'doughnut',
+        data: {
+          labels: ['Houses / Villas', 'Apartments', 'Land / Plots', 'Commercial'],
+          datasets: [{
+            data: d.composition,
+            backgroundColor: ['#C9A96E', '#1C1C1E', '#2D6A4F', '#B7791F'],
+            borderWidth: 2,
+            borderColor: 'transparent'
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { position: 'bottom' }
+          }
+        }
+      });
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const select = document.getElementById('market-location-select');
+      renderCharts(select.value);
+
+      select.addEventListener('change', (e) => {
+        renderCharts(e.target.value);
+      });
+    });
+  </script>
+</body>
+</html>

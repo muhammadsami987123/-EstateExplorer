@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Personalized Property Reports — AI Real Estate Explorer</title>
+  <meta name="description" content="Generate bespoke real estate acquisition reports, capital allocation breakdowns, market snapshots, and actionable checklists.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📄</text></svg>">
+  <style>
+    @media print {
+      .nav, .footer, .no-print { display: none !important; }
+      body { background: #FFF !important; color: #000 !important; }
+      .card { border: 1px solid #CCC !important; box-shadow: none !important; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Sticky Navigation -->
+  <header class="nav">
+    <div class="container nav-inner">
+      <a href="index.html" class="nav-logo">
+        <div class="nav-logo-icon">AI</div>
+        <span>Estate<span class="accent">Explorer</span></span>
+      </a>
+
+      <nav>
+        <ul class="nav-links">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="explore.html">Explore</a></li>
+          <li><a href="properties.html">Properties</a></li>
+          <li><a href="advisor.html">AI Advisor</a></li>
+          <li><a href="market.html">Market Insights</a></li>
+          <li><a href="reports.html" class="active">Reports</a></li>
+          <li><a href="saved.html">Saved</a></li>
+        </ul>
+      </nav>
+
+      <div class="nav-actions">
+        <button type="button" class="theme-toggle" aria-label="Toggle Theme">🌙</button>
+        <a href="advisor.html" class="btn btn-gold btn-sm">Advisor</a>
+        <button type="button" class="nav-mobile-toggle" aria-label="Toggle Navigation Menu">☰</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="section">
+    <div class="container" style="max-width: 1040px;">
+      
+      <!-- Header & Generation Trigger -->
+      <div class="flex-between items-center flex-wrap gap-md mb-lg no-print">
+        <div>
+          <span class="section-eyebrow">Executive Intelligence</span>
+          <h1>Property Acquisition Briefing</h1>
+          <p class="text-secondary">Comprehensive personalized briefing generated from your search criteria and live market intelligence.</p>
+        </div>
+
+        <div class="flex items-center gap-sm">
+          <button type="button" id="regenerate-report-btn" class="btn btn-gold">
+            ✨ Generate New Report
+          </button>
+          <div class="flex gap-xs">
+            <button type="button" id="download-pdf-btn" class="btn btn-secondary btn-sm" title="Print to PDF">PDF</button>
+            <button type="button" id="download-md-btn" class="btn btn-secondary btn-sm" title="Download Markdown">MD</button>
+            <button type="button" id="download-json-btn" class="btn btn-secondary btn-sm" title="Download JSON">JSON</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Report Paper Sheet Container -->
+      <div id="report-sheet" class="card" style="padding: 3.5rem; background:var(--surface); border:1px solid var(--border); box-shadow:var(--shadow-lg);">
+        
+        <!-- Report Header -->
+        <div class="flex-between items-start mb-lg pb-md" style="border-bottom: 2px solid var(--border);">
+          <div>
+            <div class="flex items-center gap-sm mb-xs">
+              <span class="badge badge-match">AI Dossier #EXP-2024-89</span>
+              <span class="badge badge-sale">[Demo Dataset]</span>
+            </div>
+            <h2 style="font-size:2rem; margin-top:0.4rem;" id="rep-title">Karachi Prime Luxury Acquisition Briefing</h2>
+            <div style="font-size:0.875rem; color:var(--text-muted);" id="rep-date">Prepared on: September 18, 2024</div>
+          </div>
+          <div class="text-right">
+            <div style="font-family:var(--font-serif); font-size:1.4rem; font-weight:700; color:var(--accent);">EstateExplorer</div>
+            <div style="font-size:0.75rem; color:var(--text-muted);">Confidential Client Copy</div>
+          </div>
+        </div>
+
+        <!-- Section 1: Search Profile Summary -->
+        <div class="mb-lg">
+          <h3 class="mb-sm" style="font-size:1.3rem;">1. Executive Search Profile</h3>
+          <div class="grid-4" style="background:var(--surface-2); padding:1.25rem; border-radius:var(--radius-md); border:1px solid var(--border);" id="rep-profile-grid">
+            <div>
+              <span style="font-size:0.75rem; text-transform:uppercase; color:var(--text-muted); display:block;">Target Market</span>
+              <strong id="rep-market">Karachi (DHA / Clifton)</strong>
+            </div>
+            <div>
+              <span style="font-size:0.75rem; text-transform:uppercase; color:var(--text-muted); display:block;">Asset Class</span>
+              <strong id="rep-type">Luxury Villa / House</strong>
+            </div>
+            <div>
+              <span style="font-size:0.75rem; text-transform:uppercase; color:var(--text-muted); display:block;">Target Budget</span>
+              <strong id="rep-budget">PKR 150M - 200M</strong>
+            </div>
+            <div>
+              <span style="font-size:0.75rem; text-transform:uppercase; color:var(--text-muted); display:block;">Capacity</span>
+              <strong id="rep-capacity">4-6 Bedrooms</strong>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 2: Macro Market Snapshot -->
+        <div class="mb-lg">
+          <h3 class="mb-sm" style="font-size:1.3rem;">2. Macro Market Snapshot [Demo Dataset]</h3>
+          <p style="line-height:1.7; font-size:0.95rem; color:var(--text-secondary);" id="rep-market-summary">
+            The prime residential corridor of Karachi is demonstrating solid capital stability with annualized benchmark appreciation of <strong>+8.4%</strong>. Net rental yields across high-end DHA gated communities average <strong>7.6%</strong>, driven by corporate executive leases and expatriate repatriation demand. Average price per square foot currently trades around <strong>PKR 14,200</strong>.
+          </p>
+        </div>
+
+        <!-- Section 3: Prime Recommended Assets -->
+        <div class="mb-lg">
+          <h3 class="mb-sm" style="font-size:1.3rem;">3. Recommended Primary Matches</h3>
+          <div id="rep-properties-container" class="flex flex-col gap-md">
+            <!-- Rendered by JS -->
+          </div>
+        </div>
+
+        <!-- Section 4: Budget & Capital Allocation Analysis -->
+        <div class="mb-lg">
+          <h3 class="mb-sm" style="font-size:1.3rem;">4. Capital Outlay & Transaction Costs Heuristic</h3>
+          <div class="compare-table-wrap">
+            <table class="compare-table">
+              <thead>
+                <tr>
+                  <th>Cost Component</th>
+                  <th>Estimated Percentage</th>
+                  <th>Estimated Capital (PKR)</th>
+                  <th>Notes</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Property Acquisition Base</strong></td>
+                  <td>100.0%</td>
+                  <td>PKR 185,000,000</td>
+                  <td>Agreed settlement consideration</td>
+                </tr>
+                <tr>
+                  <td><strong>Stamp Duty & Transfer Taxes</strong></td>
+                  <td>~2.5%</td>
+                  <td>PKR 4,625,000</td>
+                  <td>Provincial statutory conveyancing</td>
+                </tr>
+                <tr>
+                  <td><strong>Legal, Title Verification & Escrow</strong></td>
+                  <td>~0.5%</td>
+                  <td>PKR 925,000</td>
+                  <td>Chain of title & encumbrance audit</td>
+                </tr>
+                <tr>
+                  <td><strong>Advisory & Closing Brokerage</strong></td>
+                  <td>~1.0%</td>
+                  <td>PKR 1,850,000</td>
+                  <td>Contractual buyer representation</td>
+                </tr>
+                <tr style="background:var(--surface-2); font-weight:700;">
+                  <td>Total Estimated Capital Outlay</td>
+                  <td>104.0%</td>
+                  <td>PKR 192,400,000</td>
+                  <td>All-in projected commitment</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Section 5: Next Steps Checklist -->
+        <div class="mb-lg">
+          <h3 class="mb-sm" style="font-size:1.3rem;">5. Acquisition Action Checklist</h3>
+          <div style="display:flex; flex-direction:column; gap:0.75rem; font-size:0.925rem;">
+            <div style="display:flex; align-items:center; gap:0.75rem;">
+              <span style="color:var(--success); font-weight:700;">[ ]</span>
+              <span>Schedule private physical walkthrough and structural inspection of short-listed villas.</span>
+            </div>
+            <div style="display:flex; align-items:center; gap:0.75rem;">
+              <span style="color:var(--success); font-weight:700;">[ ]</span>
+              <span>Engage legal counsel to perform title deed verification and encumbrance search at local sub-registrar.</span>
+            </div>
+            <div style="display:flex; align-items:center; gap:0.75rem;">
+              <span style="color:var(--success); font-weight:700;">[ ]</span>
+              <span>Request formal token agreement draft specifying seller indemnity and possession timeline.</span>
+            </div>
+            <div style="display:flex; align-items:center; gap:0.75rem;">
+              <span style="color:var(--success); font-weight:700;">[ ]</span>
+              <span>Verify utility clearance certificates (KE, Sui Gas, Cantonment Board tax dues).</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sign-off -->
+        <div style="border-top:1px solid var(--border); padding-top:1.5rem; display:flex; justify-content:space-between; align-items:center; font-size:0.8rem; color:var(--text-muted);">
+          <div>AI Real Estate Explorer Advisory Engine &bull; Automated Decision Dossier</div>
+          <div>Page 1 of 1</div>
+        </div>
+
+      </div>
+
+      <!-- Prior Reports Archive -->
+      <div class="mt-lg no-print">
+        <h3 class="mb-sm">Archived Briefings</h3>
+        <div class="card" style="padding:1rem 1.5rem;">
+          <div class="flex-between items-center">
+            <div>
+              <strong>Karachi Prime Luxury Acquisition Briefing</strong>
+              <div style="font-size:0.8rem; color:var(--text-muted);">Generated today &bull; 2 Matches &bull; PKR 185M</div>
+            </div>
+            <span class="tag">Active</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Global Footer -->
+  <footer class="footer no-print">
+    <div class="container">
+      <div class="footer-bottom" style="border:none; padding-top:0;">
+        <div>&copy; 2024 AI Real Estate Explorer. All metrics and projections are generated for demonstration purposes [Demo Dataset].</div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Script Logic -->
+  <script type="module">
+    import api from './js/api.js';
+    import { formatPrice, formatArea, showToast } from './js/app.js';
+    import { mockProperties } from './js/mock_data.js';
+
+    function loadReportData() {
+      const savedPrefs = JSON.parse(localStorage.getItem('user_property_prefs') || 'null');
+      
+      const city = savedPrefs?.city || 'Karachi';
+      const type = savedPrefs?.property_type || 'villa';
+      const budget = savedPrefs?.max_budget || 200000000;
+      const currency = savedPrefs?.currency || 'PKR';
+      const beds = savedPrefs?.bedrooms || 5;
+
+      document.getElementById('rep-title').textContent = `${city} Prime ${type.toUpperCase()} Acquisition Briefing`;
+      document.getElementById('rep-date').textContent = `Prepared on: ${new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}`;
+      document.getElementById('rep-market').textContent = `${city}, ${savedPrefs?.country || 'Pakistan'}`;
+      document.getElementById('rep-type').textContent = `${type.charAt(0).toUpperCase() + type.slice(1)} (${savedPrefs?.intent || 'Buy'})`;
+      document.getElementById('rep-budget').textContent = formatPrice(budget, currency);
+      document.getElementById('rep-capacity').textContent = `${beds} Bedrooms`;
+
+      // Matches
+      const matches = mockProperties.slice(0, 2);
+      const container = document.getElementById('rep-properties-container');
+      
+      container.innerHTML = matches.map(m => `
+        <div class="card" style="padding:1.25rem; display:flex; gap:1.5rem; align-items:center; flex-wrap:wrap;">
+          <img src="${m.images[0]}" alt="${m.title}" style="width:140px; height:90px; object-fit:cover; border-radius:var(--radius-sm);">
+          <div style="flex:1;">
+            <div class="flex-between">
+              <strong style="font-size:1.05rem;">${m.title}</strong>
+              <span class="text-gold" style="font-weight:700; font-family:var(--font-serif);">${formatPrice(m.price, m.currency)}</span>
+            </div>
+            <div style="font-size:0.85rem; color:var(--text-muted); margin-top:0.25rem;">
+              📍 ${m.address}, ${m.city} &bull; ${m.bedrooms} Beds &bull; ${formatArea(m.area_sqft)}
+            </div>
+            <div style="font-size:0.8rem; color:var(--success); margin-top:0.4rem;">
+              ✓ High lifestyle match score &bull; Clean title history &bull; Private Amenities
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      loadReportData();
+
+      document.getElementById('regenerate-report-btn')?.addEventListener('click', () => {
+        showToast('Synthesizing updated market intelligence...', 'info');
+        setTimeout(() => {
+          loadReportData();
+          showToast('Report updated successfully!', 'success');
+        }, 500);
+      });
+
+      document.getElementById('download-pdf-btn')?.addEventListener('click', () => {
+        window.print();
+      });
+
+      document.getElementById('download-md-btn')?.addEventListener('click', () => {
+        const title = document.getElementById('rep-title').textContent;
+        const md = `# ${title}\n\nDate: ${new Date().toISOString()}\n\n## Executive Summary\nAnalysis generated by AI Real Estate Explorer [Demo Dataset].\n\n## Target Budget\nPKR 185,000,000\n\n## Next Steps\n- Conduct structural survey\n- Verify land title clearance`;
+        const blob = new Blob([md], { type: 'text/markdown' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `Acquisition-Report-${Date.now()}.md`;
+        a.click();
+      });
+
+      document.getElementById('download-json-btn')?.addEventListener('click', () => {
+        const data = {
+          title: document.getElementById('rep-title').textContent,
+          generated_at: new Date().toISOString(),
+          disclaimer: "Demo Dataset - for simulation purposes only",
+          recommendations: mockProperties.slice(0, 2)
+        };
+        const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `Acquisition-Report-${Date.now()}.json`;
+        a.click();
+      });
+    });
+  </script>
+</body>
+</html>

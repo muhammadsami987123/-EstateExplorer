@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact & Advisory — AI Real Estate Explorer</title>
+  <meta name="description" content="Connect with our real estate advisory engineers and luxury property specialists.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📬</text></svg>">
+</head>
+<body>
+
+  <!-- Sticky Navigation -->
+  <header class="nav">
+    <div class="container nav-inner">
+      <a href="index.html" class="nav-logo">
+        <div class="nav-logo-icon">AI</div>
+        <span>Estate<span class="accent">Explorer</span></span>
+      </a>
+
+      <nav>
+        <ul class="nav-links">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="explore.html">Explore</a></li>
+          <li><a href="properties.html">Properties</a></li>
+          <li><a href="advisor.html">AI Advisor</a></li>
+          <li><a href="market.html">Market Insights</a></li>
+          <li><a href="reports.html">Reports</a></li>
+          <li><a href="saved.html">Saved</a></li>
+        </ul>
+      </nav>
+
+      <div class="nav-actions">
+        <button type="button" class="theme-toggle" aria-label="Toggle Theme">🌙</button>
+        <a href="advisor.html" class="btn btn-gold btn-sm">Start Exploring</a>
+        <button type="button" class="nav-mobile-toggle" aria-label="Toggle Navigation Menu">☰</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="section">
+    <div class="container" style="max-width: 980px;">
+      
+      <!-- Page Header -->
+      <div class="section-header text-center">
+        <span class="section-eyebrow">Connect & Inquire</span>
+        <h1>Get in Touch with Our Advisory</h1>
+        <p class="section-subtitle">
+          Have an inquiry regarding a specific listing, bespoke API integrations, or private acquisitions? We are here to assist.
+        </p>
+      </div>
+
+      <div class="grid-2" style="gap: 3rem; align-items: start;">
+        
+        <!-- Contact Form -->
+        <div class="card" style="padding: 2.25rem;">
+          <h3 class="mb-sm">Send a Message</h3>
+          <p style="font-size:0.875rem; color:var(--text-muted); margin-bottom:1.5rem;">
+            Fill out the form below and our team will get back to you within 24 hours.
+          </p>
+
+          <form id="contact-form">
+            <div class="form-group">
+              <label class="form-label" for="contact-name">Full Name</label>
+              <input type="text" id="contact-name" class="input" placeholder="e.g. Tariq Mansoor" required>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="contact-email">Email Address</label>
+              <input type="email" id="contact-email" class="input" placeholder="tariq@example.com" required>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="contact-topic">Interest / Market</label>
+              <select id="contact-topic" class="select">
+                <option value="karachi">Karachi Luxury Acquisition</option>
+                <option value="lahore">Lahore Residential Investment</option>
+                <option value="islamabad">Islamabad Sector Estate</option>
+                <option value="dubai">Dubai Prime Relocation</option>
+                <option value="london">London Central Property</option>
+                <option value="platform">Platform Engineering / Feedback</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="contact-msg">Message</label>
+              <textarea id="contact-msg" class="textarea" rows="4" placeholder="Detail your requirements, target timeline, or queries..." required></textarea>
+            </div>
+
+            <button type="submit" id="contact-submit-btn" class="btn btn-gold" style="width: 100%;">
+              Send Inquiry ➔
+            </button>
+          </form>
+        </div>
+
+        <!-- Contact Information Details -->
+        <div class="flex flex-col gap-md">
+          
+          <div class="card card-hover">
+            <div style="font-size:2rem; margin-bottom:0.5rem;">🏢</div>
+            <h4>Engineering Headquarters</h4>
+            <p style="font-size:0.875rem; color:var(--text-secondary); margin-bottom:0.5rem;">
+              Karachi, Sindh, Pakistan
+            </p>
+            <p style="font-size:0.8rem; color:var(--text-muted);">
+              Active regional coverage across Pakistan, Dubai (UAE), and London (UK).
+            </p>
+          </div>
+
+          <div class="card card-hover">
+            <div style="font-size:2rem; margin-bottom:0.5rem;">📧</div>
+            <h4>Direct Electronic Mail</h4>
+            <p style="font-size:0.875rem; color:var(--text-secondary); margin-bottom:0.5rem;">
+              <a href="mailto:m.samiwaseem1234@gmail.com" class="text-gold" style="font-weight:600;">m.samiwaseem1234@gmail.com</a>
+            </p>
+            <p style="font-size:0.8rem; color:var(--text-muted);">
+              Direct communications with creator Muhammad Sami Asghar Mughal.
+            </p>
+          </div>
+
+          <div class="card card-hover">
+            <div style="font-size:2rem; margin-bottom:0.5rem;">🌐</div>
+            <h4>Developer Networks</h4>
+            <div class="flex flex-wrap gap-xs mt-sm">
+              <a href="https://muhammad-sami.vercel.app" target="_blank" rel="noopener" class="tag">Portfolio Web</a>
+              <a href="https://github.com/muhammadsami987123" target="_blank" rel="noopener" class="tag">GitHub Repositories</a>
+              <a href="https://linkedin.com/in/muhammad-sami-3aa6102b8" target="_blank" rel="noopener" class="tag">LinkedIn Network</a>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Global Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-bottom" style="border:none; padding-top:0;">
+        <div>&copy; 2024 AI Real Estate Explorer. All listings and analytics are for demonstration purposes [Demo Dataset].</div>
+      </div>
+    </div>
+  </footer>
+
+  <script type="module">
+    import { showToast } from './js/app.js';
+
+    document.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('contact-form')?.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const btn = document.getElementById('contact-submit-btn');
+        btn.disabled = true;
+        btn.textContent = 'Transmitting Message...';
+
+        setTimeout(() => {
+          showToast('Thank you! Your inquiry has been logged. Our advisory team will contact you shortly.', 'success');
+          document.getElementById('contact-form').reset();
+          btn.disabled = false;
+          btn.textContent = 'Send Inquiry ➔';
+        }, 600);
+      });
+    });
+  </script>
+</body>
+</html>

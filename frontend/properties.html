@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Property Catalog — AI Real Estate Explorer</title>
+  <meta name="description" content="Browse verified residential and commercial properties with interactive filters, MapLibre map view, and smart sorting.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/main.css">
+  <link href="https://unpkg.com/maplibre-gl@3.6.2/dist/maplibre-gl.css" rel="stylesheet" />
+  <script src="https://unpkg.com/maplibre-gl@3.6.2/dist/maplibre-gl.js"></script>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏢</text></svg>">
+  <style>
+    .catalog-layout {
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      gap: 2.5rem;
+      align-items: start;
+    }
+    .filters-sidebar {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.5rem;
+      position: sticky;
+      top: 92px;
+    }
+    .filter-chips-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 1.5rem;
+    }
+    .filter-chip {
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      padding: 0.25rem 0.65rem;
+      border-radius: var(--radius-full);
+      font-size: 0.8rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .filter-chip button {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+    #map-container {
+      width: 100%;
+      height: 600px;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+      display: none;
+      margin-bottom: 2rem;
+      overflow: hidden;
+    }
+    .maplibregl-popup-content {
+      border-radius: 8px;
+      padding: 10px;
+      font-family: var(--font-sans);
+      color: #1C1C1E;
+    }
+    @media (max-width: 900px) {
+      .catalog-layout {
+        grid-template-columns: 1fr;
+      }
+      .filters-sidebar {
+        position: static;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Sticky Navigation -->
+  <header class="nav">
+    <div class="container nav-inner">
+      <a href="index.html" class="nav-logo">
+        <div class="nav-logo-icon">AI</div>
+        <span>Estate<span class="accent">Explorer</span></span>
+      </a>
+
+      <nav>
+        <ul class="nav-links">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="explore.html">Explore</a></li>
+          <li><a href="properties.html" class="active">Properties</a></li>
+          <li><a href="advisor.html">AI Advisor</a></li>
+          <li><a href="market.html">Market Insights</a></li>
+          <li><a href="reports.html">Reports</a></li>
+          <li><a href="saved.html">Saved</a></li>
+        </ul>
+      </nav>
+
+      <div class="nav-actions">
+        <button type="button" class="theme-toggle" aria-label="Toggle Theme">🌙</button>
+        <a href="advisor.html" class="btn btn-gold btn-sm">Start Exploring</a>
+        <button type="button" class="nav-mobile-toggle" aria-label="Toggle Navigation Menu">☰</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="section-sm">
+    <div class="container">
+      
+      <!-- Page Header -->
+      <div class="flex-between items-center flex-wrap gap-md mb-md">
+        <div>
+          <span class="section-eyebrow">Verified Inventory [Demo Dataset]</span>
+          <h1>Explore Available Properties</h1>
+        </div>
+        <div class="flex items-center gap-sm">
+          <button type="button" id="toggle-map-btn" class="btn btn-secondary">
+            <span id="map-icon">🗺️</span> <span id="map-btn-text">Show Map</span>
+          </button>
+          <a href="advisor.html" class="btn btn-gold">
+            <span>✨ AI Advisor Matches</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Active Filter Chips -->
+      <div id="active-chips" class="filter-chips-bar"></div>
+
+      <!-- Interactive Map View Container -->
+      <div id="map-container"></div>
+
+      <!-- Catalog Main Layout -->
+      <div class="catalog-layout">
+        
+        <!-- Sidebar Filters -->
+        <aside class="filters-sidebar">
+          <div class="flex-between items-center mb-sm">
+            <h4 style="font-size:1.1rem;">Filters</h4>
+            <button type="button" id="reset-filters-btn" class="btn btn-ghost btn-sm" style="padding:0.2rem 0.5rem; font-size:0.8rem;">Reset All</button>
+          </div>
+
+          <form id="filter-form">
+            <!-- Listing Type -->
+            <div class="form-group">
+              <label class="form-label">Intent / Listing</label>
+              <select id="filter-listing" class="select">
+                <option value="">All Types (Sale & Rent)</option>
+                <option value="sale">For Sale</option>
+                <option value="rent">For Rent</option>
+              </select>
+            </div>
+
+            <!-- Property Type -->
+            <div class="form-group">
+              <label class="form-label">Property Category</label>
+              <select id="filter-type" class="select">
+                <option value="">All Categories</option>
+                <option value="house">House / Standalone</option>
+                <option value="apartment">Apartment / Flat</option>
+                <option value="villa">Villa / Luxury Estate</option>
+                <option value="plot">Plot / Land</option>
+                <option value="office">Office / Commercial</option>
+                <option value="shop">Shop / Retail</option>
+              </select>
+            </div>
+
+            <!-- City -->
+            <div class="form-group">
+              <label class="form-label">City / Territory</label>
+              <select id="filter-city" class="select">
+                <option value="">All Cities</option>
+                <option value="Karachi">Karachi, Pakistan</option>
+                <option value="Lahore">Lahore, Pakistan</option>
+                <option value="Islamabad">Islamabad, Pakistan</option>
+                <option value="Dubai">Dubai, UAE</option>
+                <option value="London">London, UK</option>
+              </select>
+            </div>
+
+            <!-- Price Range -->
+            <div class="form-group">
+              <label class="form-label">Max Budget</label>
+              <select id="filter-price" class="select">
+                <option value="">Any Price</option>
+                <option value="50000000">Under 50M PKR</option>
+                <option value="100000000">Under 100M PKR</option>
+                <option value="200000000">Under 200M PKR</option>
+                <option value="500000000">Under 500M PKR</option>
+                <option value="500000">Under 500K AED / GBP</option>
+                <option value="5000000">Under 5M AED / GBP</option>
+              </select>
+            </div>
+
+            <!-- Bedrooms -->
+            <div class="form-group">
+              <label class="form-label">Bedrooms</label>
+              <select id="filter-beds" class="select">
+                <option value="">Any Bedrooms</option>
+                <option value="1">1+ Beds</option>
+                <option value="2">2+ Beds</option>
+                <option value="3">3+ Beds</option>
+                <option value="4">4+ Beds</option>
+                <option value="5">5+ Beds</option>
+              </select>
+            </div>
+
+            <!-- Bathrooms -->
+            <div class="form-group">
+              <label class="form-label">Bathrooms</label>
+              <select id="filter-baths" class="select">
+                <option value="">Any Bathrooms</option>
+                <option value="1">1+ Baths</option>
+                <option value="2">2+ Baths</option>
+                <option value="3">3+ Baths</option>
+                <option value="4">4+ Baths</option>
+              </select>
+            </div>
+
+            <!-- Furnishing -->
+            <div class="form-group">
+              <label class="form-label">Furnishing</label>
+              <select id="filter-furnished" class="select">
+                <option value="">Any</option>
+                <option value="furnished">Furnished</option>
+                <option value="semi-furnished">Semi-Furnished</option>
+                <option value="unfurnished">Unfurnished</option>
+              </select>
+            </div>
+          </form>
+        </aside>
+
+        <!-- Main Property Stream -->
+        <div>
+          <!-- Sort & Count Bar -->
+          <div class="flex-between items-center flex-wrap gap-sm mb-md" style="background:var(--surface); padding:0.85rem 1.25rem; border:1px solid var(--border); border-radius:var(--radius-md);">
+            <div id="catalog-count" style="font-size:0.925rem; font-weight:500;">
+              Showing all listings
+            </div>
+
+            <div class="flex items-center gap-sm">
+              <label for="sort-by" style="font-size:0.85rem; color:var(--text-muted);">Sort By:</label>
+              <select id="sort-by" class="select" style="padding:0.4rem 0.75rem; width:auto; font-size:0.85rem;">
+                <option value="default">Featured / Default</option>
+                <option value="price-asc">Price: Low to High</option>
+                <option value="price-desc">Price: High to Low</option>
+                <option value="area-desc">Area: Largest First</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Properties Grid -->
+          <div id="properties-grid" class="grid-3">
+            <div class="skeleton skeleton-card"></div>
+            <div class="skeleton skeleton-card"></div>
+            <div class="skeleton skeleton-card"></div>
+          </div>
+
+          <!-- Pagination Bar -->
+          <div id="pagination-bar" class="flex-center gap-sm mt-lg" style="display:none;">
+            <button type="button" class="btn btn-secondary btn-sm" id="prev-page" disabled>Previous</button>
+            <span id="page-indicator" style="font-size:0.85rem; font-weight:600;">Page 1 of 1</span>
+            <button type="button" class="btn btn-secondary btn-sm" id="next-page" disabled>Next</button>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Global Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="index.html" class="nav-logo" style="margin-bottom: 1rem;">
+            <div class="nav-logo-icon">AI</div>
+            <span>Estate<span class="accent">Explorer</span></span>
+          </a>
+          <p>Production-grade AI property intelligence and transparent matching platform.</p>
+        </div>
+        <div>
+          <h4 class="footer-heading">Platform</h4>
+          <ul class="footer-links">
+            <li><a href="advisor.html">AI Questionnaire</a></li>
+            <li><a href="explore.html">Natural Language</a></li>
+            <li><a href="market.html">Market Trends</a></li>
+            <li><a href="compare.html">Compare Matrix</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="footer-heading">Hubs</h4>
+          <ul class="footer-links">
+            <li><a href="properties.html?city=Karachi">Karachi</a></li>
+            <li><a href="properties.html?city=Lahore">Lahore</a></li>
+            <li><a href="properties.html?city=Islamabad">Islamabad</a></li>
+            <li><a href="properties.html?city=Dubai">Dubai</a></li>
+            <li><a href="properties.html?city=London">London</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="footer-heading">Company</h4>
+          <ul class="footer-links">
+            <li><a href="about.html">About Developer</a></li>
+            <li><a href="faq.html">FAQ</a></li>
+            <li><a href="privacy.html">Privacy</a></li>
+            <li><a href="terms.html">Terms [Demo Dataset]</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <div>&copy; 2024 AI Real Estate Explorer. All data presented is for demonstration purposes.</div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Script Logic with MapLibre GL Integration -->
+  <script type="module">
+    import api from './js/api.js';
+    import { createPropertyCardHTML, attachCardEventListeners, showSkeletons, formatPrice } from './js/app.js';
+    import { mockProperties } from './js/mock_data.js';
+
+    let allProperties = [];
+    let filteredProperties = [];
+    let map = null;
+    let mapMarkers = [];
+    let isMapVisible = false;
+
+    // Read URL Parameters
+    function parseURLParams() {
+      const params = new URLSearchParams(window.location.search);
+      if (params.has('city')) document.getElementById('filter-city').value = params.get('city');
+      if (params.has('type')) document.getElementById('filter-type').value = params.get('type');
+      if (params.has('listing')) document.getElementById('filter-listing').value = params.get('listing');
+      if (params.has('q')) {
+        // Natural language or keyword query
+        const q = params.get('q').toLowerCase();
+        if (q.includes('karachi')) document.getElementById('filter-city').value = 'Karachi';
+        if (q.includes('lahore')) document.getElementById('filter-city').value = 'Lahore';
+        if (q.includes('islamabad')) document.getElementById('filter-city').value = 'Islamabad';
+        if (q.includes('dubai')) document.getElementById('filter-city').value = 'Dubai';
+        if (q.includes('london')) document.getElementById('filter-city').value = 'London';
+        if (q.includes('rent')) document.getElementById('filter-listing').value = 'rent';
+        if (q.includes('buy') || q.includes('sale')) document.getElementById('filter-listing').value = 'sale';
+        if (q.includes('villa')) document.getElementById('filter-type').value = 'villa';
+        if (q.includes('apartment')) document.getElementById('filter-type').value = 'apartment';
+        if (q.includes('house')) document.getElementById('filter-type').value = 'house';
+      }
+    }
+
+    async function fetchProperties() {
+      const container = document.getElementById('properties-grid');
+      showSkeletons(container, 6, 'card');
+
+      try {
+        const res = await api.properties.list();
+        if (res && res.length > 0) {
+          allProperties = res;
+        } else {
+          allProperties = mockProperties;
+        }
+      } catch (e) {
+        console.warn('Backend properties endpoint unreachable, loaded demo properties.', e);
+        allProperties = mockProperties;
+      }
+
+      applyFilters();
+    }
+
+    function applyFilters() {
+      const listing = document.getElementById('filter-listing').value;
+      const type = document.getElementById('filter-type').value;
+      const city = document.getElementById('filter-city').value;
+      const maxPrice = parseFloat(document.getElementById('filter-price').value) || null;
+      const beds = parseInt(document.getElementById('filter-beds').value) || null;
+      const baths = parseInt(document.getElementById('filter-baths').value) || null;
+      const furnished = document.getElementById('filter-furnished').value;
+      const sortBy = document.getElementById('sort-by').value;
+
+      filteredProperties = allProperties.filter(p => {
+        if (listing && p.listing_type !== listing) return false;
+        if (type && p.property_type !== type) return false;
+        if (city && p.city !== city) return false;
+        if (maxPrice && p.price > maxPrice) return false;
+        if (beds && (!p.bedrooms || p.bedrooms < beds)) return false;
+        if (baths && (!p.bathrooms || p.bathrooms < baths)) return false;
+        if (furnished && p.furnished !== furnished) return false;
+        return true;
+      });
+
+      // Sorting
+      if (sortBy === 'price-asc') {
+        filteredProperties.sort((a, b) => a.price - b.price);
+      } else if (sortBy === 'price-desc') {
+        filteredProperties.sort((a, b) => b.price - a.price);
+      } else if (sortBy === 'area-desc') {
+        filteredProperties.sort((a, b) => (b.area_sqft || 0) - (a.area_sqft || 0));
+      }
+
+      renderChips();
+      renderCatalog();
+      if (isMapVisible) updateMapMarkers();
+    }
+
+    function renderChips() {
+      const chipsContainer = document.getElementById('active-chips');
+      const filters = [
+        { id: 'filter-listing', label: 'Listing' },
+        { id: 'filter-type', label: 'Type' },
+        { id: 'filter-city', label: 'City' },
+        { id: 'filter-price', label: 'Budget' },
+        { id: 'filter-beds', label: 'Beds' },
+        { id: 'filter-baths', label: 'Baths' },
+        { id: 'filter-furnished', label: 'Furnishing' }
+      ];
+
+      const chips = [];
+      filters.forEach(f => {
+        const el = document.getElementById(f.id);
+        if (el && el.value) {
+          const text = el.options[el.selectedIndex].text;
+          chips.push(`
+            <div class="filter-chip">
+              <span><strong>${f.label}:</strong> ${text}</span>
+              <button type="button" data-input="${f.id}" class="remove-chip-btn">&times;</button>
+            </div>
+          `);
+        }
+      });
+
+      chipsContainer.innerHTML = chips.join('');
+      chipsContainer.querySelectorAll('.remove-chip-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const inputId = btn.dataset.input;
+          document.getElementById(inputId).value = '';
+          applyFilters();
+        });
+      });
+    }
+
+    function renderCatalog() {
+      const grid = document.getElementById('properties-grid');
+      const countEl = document.getElementById('catalog-count');
+
+      countEl.textContent = `Showing ${filteredProperties.length} ${filteredProperties.length === 1 ? 'property' : 'properties'}`;
+
+      if (filteredProperties.length === 0) {
+        grid.innerHTML = `
+          <div style="grid-column: 1 / -1; text-align: center; padding: 4rem 1rem; background:var(--surface); border:1px dashed var(--border); border-radius:var(--radius-md);">
+            <div style="font-size:2.5rem; margin-bottom:0.75rem;">🔍</div>
+            <h3>No Properties Match Your Selection</h3>
+            <p style="color:var(--text-muted); margin-bottom:1.5rem;">Try relaxing your budget, bedrooms, or location criteria.</p>
+            <button type="button" id="clear-all-empty-btn" class="btn btn-primary">Clear All Filters</button>
+          </div>
+        `;
+        document.getElementById('clear-all-empty-btn')?.addEventListener('click', resetFilters);
+        return;
+      }
+
+      grid.innerHTML = filteredProperties.map((prop, idx) => createPropertyCardHTML(prop, idx)).join('');
+      attachCardEventListeners(grid);
+    }
+
+    function resetFilters() {
+      document.getElementById('filter-form').reset();
+      document.getElementById('sort-by').value = 'default';
+      applyFilters();
+    }
+
+    // MapLibre Integration
+    function initMap() {
+      const mapEl = document.getElementById('map-container');
+      if (!map) {
+        map = new maplibregl.Map({
+          container: 'map-container',
+          style: {
+            version: 8,
+            sources: {
+              'osm-tiles': {
+                type: 'raster',
+                tiles: ['https://tile.openstreetmap.org/{z}/{x}/{y}.png'],
+                tileSize: 256,
+                attribution: '&copy; OpenStreetMap Contributors'
+              }
+            },
+            layers: [{
+              id: 'osm-tiles-layer',
+              type: 'raster',
+              source: 'osm-tiles',
+              minzoom: 0,
+              maxzoom: 19
+            }]
+          },
+          center: [67.0011, 24.8607], // Karachi default
+          zoom: 10
+        });
+
+        map.addControl(new maplibregl.NavigationControl(), 'top-right');
+      }
+      updateMapMarkers();
+    }
+
+    function updateMapMarkers() {
+      if (!map) return;
+      mapMarkers.forEach(m => m.remove());
+      mapMarkers = [];
+
+      const bounds = new maplibregl.LngLatBounds();
+      let hasValidCoords = false;
+
+      filteredProperties.forEach(p => {
+        if (p.longitude && p.latitude) {
+          hasValidCoords = true;
+          bounds.extend([p.longitude, p.latitude]);
+
+          const el = document.createElement('div');
+          el.className = 'marker';
+          el.style.cssText = `
+            background: #1C1C1E;
+            color: #FFFFFF;
+            border: 2px solid #C9A96E;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+          `;
+          el.textContent = formatPrice(p.price, p.currency, true);
+
+          const popup = new maplibregl.Popup({ offset: 25 }).setHTML(`
+            <div style="font-size:12px; max-width:180px;">
+              <strong style="display:block; margin-bottom:4px;">${p.title}</strong>
+              <div style="color:#C9A96E; font-weight:700; margin-bottom:4px;">${formatPrice(p.price, p.currency)}</div>
+              <a href="property.html?id=${p.id}" style="color:#2D6A4F; text-decoration:underline;">View Details</a>
+            </div>
+          `);
+
+          const marker = new maplibregl.Marker({ element: el })
+            .setLngLat([p.longitude, p.latitude])
+            .setPopup(popup)
+            .addTo(map);
+
+          mapMarkers.push(marker);
+        }
+      });
+
+      if (hasValidCoords) {
+        map.fitBounds(bounds, { padding: 50, maxZoom: 14 });
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      parseURLParams();
+      fetchProperties();
+
+      // Form Listeners
+      document.querySelectorAll('#filter-form select').forEach(sel => {
+        sel.addEventListener('change', applyFilters);
+      });
+      document.getElementById('sort-by').addEventListener('change', applyFilters);
+      document.getElementById('reset-filters-btn').addEventListener('click', resetFilters);
+
+      // Map Toggle
+      const toggleMapBtn = document.getElementById('toggle-map-btn');
+      const mapContainer = document.getElementById('map-container');
+      const mapIcon = document.getElementById('map-icon');
+      const mapBtnText = document.getElementById('map-btn-text');
+
+      toggleMapBtn.addEventListener('click', () => {
+        isMapVisible = !isMapVisible;
+        if (isMapVisible) {
+          mapContainer.style.display = 'block';
+          mapIcon.textContent = '📋';
+          mapBtnText.textContent = 'Hide Map';
+          initMap();
+          setTimeout(() => map && map.resize(), 100);
+        } else {
+          mapContainer.style.display = 'none';
+          mapIcon.textContent = '🗺️';
+          mapBtnText.textContent = 'Show Map';
+        }
+      });
+    });
+  </script>
+</body>
+</html>
